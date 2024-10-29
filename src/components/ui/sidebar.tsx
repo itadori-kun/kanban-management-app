@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
-import { EyeOff } from "lucide-react"
+import { EyeOff, Eye } from "lucide-react"
 
 
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -271,7 +271,7 @@ const SidebarTrigger = React.forwardRef<
     <Button
       ref={ ref }
       data-sidebar="trigger"
-      variant="ghost"
+      variant="inherit"
       size="icon"
       className={ cn( "h-8 w-8", className ) }
       onClick={ ( event ) => {
@@ -280,12 +280,42 @@ const SidebarTrigger = React.forwardRef<
       } }
       { ...props }
     >
-      <EyeOff />
+      <Eye />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )
 } )
 SidebarTrigger.displayName = "SidebarTrigger"
+
+
+// Duplicated the exisiting SidebarTrigger to SidebarTrigger2 so that i could toggle the sidebar display and its components from line 292 to 318
+const SidebarTrigger2 = React.forwardRef<
+  React.ElementRef<typeof Button>,
+  React.ComponentProps<typeof Button>
+>( ( { className, onClick, ...props }, ref ) => {
+  const { toggleSidebar } = useSidebar()
+
+  return (
+    <Button
+      ref={ ref }
+      data-sidebar="trigger"
+      variant="inherit"
+      size="icon"
+      className={ cn( "h-8 w-fit text-base", className ) }
+      onClick={ ( event ) => {
+        onClick?.( event )
+        toggleSidebar()
+      } }
+      { ...props }
+    >
+      <EyeOff />
+      Hide Sidebar
+      <span className="sr-only">Toggle Sidebar</span>
+    </Button>
+  )
+} )
+
+SidebarTrigger2.displayName = "SidebarTrigger2"
 
 const SidebarRail = React.forwardRef<
   HTMLButtonElement,
@@ -762,5 +792,6 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
+  SidebarTrigger2,
   useSidebar,
 }
