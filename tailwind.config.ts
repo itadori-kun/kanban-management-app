@@ -5,12 +5,12 @@ const config: Config = {
     content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}"
   ],
 	theme: {
     	extend: {
     		fontFamily: {
-    			plusJakarta: ['plus-jakarta-sans"', 'sans-serif']
+    			plusJakarta: ['plus-jakarta-sans', 'sans-serif']
     		},
     		colors: {
     			background: 'hsl(var(--background))',
@@ -80,8 +80,8 @@ const config: Config = {
     			md: 'calc(var(--radius) - 2px)',
     			sm: 'calc(var(--radius) - 4px)'
     		}
-    	}
+    	},
     },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate")]
 };
 export default config;

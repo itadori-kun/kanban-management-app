@@ -1,4 +1,5 @@
 export interface PropIcons {
     className?: string,
-    primaryColor?: string
+    primaryColor?: string,
+    secondaryColor?: string
 }
