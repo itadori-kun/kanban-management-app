@@ -41,7 +41,7 @@ const items = [
 ]
 
 export function AppSidebar(): React.ReactNode {
-    const [ sidebarIcon, setSidebarIcon ] = useState<boolean>( false );
+    const [ sidebarIcon, setSidebarIcon ] = useState<boolean>( true );
     const [ display, setDisplay ] = useState<string>( 'block' );
 
 
@@ -50,10 +50,10 @@ export function AppSidebar(): React.ReactNode {
 
         const updateDisplay = () => {
             if ( sidebarItems.dataset.state === 'expanded' ) {
-                setSidebarIcon( !sidebarIcon );
+                setSidebarIcon( sidebarIcon );
                 setDisplay( 'block' );
             } else {
-                setSidebarIcon( sidebarIcon );
+                setSidebarIcon( !sidebarIcon );
                 setDisplay( 'hidden' );
             }
         };
@@ -67,7 +67,7 @@ export function AppSidebar(): React.ReactNode {
     }, [] );
 
 
-    const { theme } = useTheme();
+    const { theme, systemTheme } = useTheme();
     return (
         <div className="flex-col flex relative top-0 font-plusJakarta">
             <div className={ `${ display }` }>
@@ -77,7 +77,7 @@ export function AppSidebar(): React.ReactNode {
 
                             {/* Logo region: this changes according to the theme.*/ }
                             <header className="mx-7 pt-8 pb-14">
-                                { theme === 'light' ? <DarkLogo /> : <LightLogo /> }
+                                { ( theme || systemTheme ) === 'light' ? <DarkLogo /> : <LightLogo /> }
                             </header>
 
                             {/* side bar navigation area where new boards are created*/ }
@@ -89,7 +89,7 @@ export function AppSidebar(): React.ReactNode {
 
                                     {/* populate existing board from storage or database*/ }
                                     { items.map( ( item ) => (
-                                        <SidebarMenuItem key={ item.title } className="py-2 pl-6 mr-6 rounded-r-full text-L828fa3  hover:text-white hover:bg-L635fc7 ">
+                                        <SidebarMenuItem key={ item.title } className="py-2 pl-6 mr-6 rounded-r-full text-L828fa3  hover:text-white hover:bg-L635fc7 active:bg-L635fc7 ">
                                             <SidebarMenuButton asChild className="pl-1 text-base font-bold bg-transparent hover:bg-transparent active:bg-transparent ">
                                                 <a href={ item.url }>
                                                     <item.icon />
@@ -126,7 +126,7 @@ export function AppSidebar(): React.ReactNode {
             { sidebarIcon ? ( <div className="w-10/12 sticky bottom-7 z-10 text-transform:capitalize flex items-center gap-1 pl-6 text-L828fa3 text-base cursor-pointer hover:text-L828fa3/70 rounded-r-full">
                 <SidebarTrigger2 />
             </div> ) : (
-                <div className=" absolute bottom-7 z-10 flex items-center gap-1 px-2 text-white bg-L635fc7 rounded-r-full cursor-pointer">
+                <div className=" absolute w-fit bottom-7 z-10 flex items-center gap-1 px-2 text-white bg-L635fc7 rounded-r-full cursor-pointer">
                     <SidebarTrigger />
                 </div>
             ) }

@@ -281,7 +281,7 @@ const SidebarTrigger = React.forwardRef<
       { ...props }
     >
       <Eye />
-      <span className="sr-only">Toggle Sidebar</span>
+      <span className="sr-only">Open Sidebar</span>
     </Button>
   )
 } )
@@ -310,7 +310,7 @@ const SidebarTrigger2 = React.forwardRef<
     >
       <EyeOff />
       Hide Sidebar
-      <span className="sr-only">Toggle Sidebar</span>
+      <span className="sr-only">Close Sidebar</span>
     </Button>
   )
 } )
