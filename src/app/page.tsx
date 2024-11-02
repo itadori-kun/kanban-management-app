@@ -7,7 +7,9 @@ import { useTheme } from "next-themes";
 import { DarkLogo } from "@/components/icons/darkLogo"
 import { LightLogo } from "@/components/icons/lightLogo"
 
-import { Todo } from '@/components/todo';
+// import { Todo } from '@/components/todo';
+import { TaskForm } from '@/components/taskForm';
+// import { ProfileForm } from '@/components/profile';
 // import EmptyDashboard from '@/components/emptyDashboard';
 
 export default function Home() {
@@ -192,7 +194,10 @@ export default function Home() {
         // We call the click function on the overlay so as to close the overlay
         <section className='w-full h-full bg-blend-overlay bg-L828fa3/25  z-40 grid place-items-center absolute top-0 left-0 cursor-pointer' onClick={ handleOverlay }>
 
-          <Todo />
+          {/* <Todo /> */ }
+          <TaskForm />
+
+          {/* <ProfileForm /> */ }
 
         </section>
       ) }

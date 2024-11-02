@@ -29,7 +29,7 @@ export default function RootLayout( {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={ `${ PlusJakartaSans.variable } ${ PlusJakartaSansItalic.variable } antialiased` }
+        className={ `${ PlusJakartaSans.variable } ${ PlusJakartaSansItalic.variable } antialiased overscroll-none` }
       >
         <ThemeProvider
           attribute="class"
