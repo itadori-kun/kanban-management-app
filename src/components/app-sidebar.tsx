@@ -7,6 +7,7 @@ import { BoardIcon } from "@/components/icons/boardIcon"
 import { Toggle } from "@/components/toggle"
 import { DarkLogo } from "@/components/icons/darkLogo"
 import { LightLogo } from "@/components/icons/lightLogo"
+import { useAppContext } from "@/context";
 
 import {
     Sidebar,
@@ -40,9 +41,14 @@ const items = [
     }
 ]
 
-export function AppSidebar(): React.ReactNode {
+export function AppSidebar(): JSX.Element {
+
+    const { handleAddBoard } = useAppContext();
     const [ sidebarIcon, setSidebarIcon ] = useState<boolean>( true );
     const [ display, setDisplay ] = useState<string>( 'block' );
+
+
+
 
 
     useEffect( () => {
@@ -77,7 +83,7 @@ export function AppSidebar(): React.ReactNode {
 
                             {/* Logo region: this changes according to the theme.*/ }
                             <header className="mx-7 pt-8 pb-14">
-                                { ( theme || systemTheme ) === 'light' ? <DarkLogo /> : <LightLogo /> }
+                                { systemTheme === "light" || theme === 'light' ? <DarkLogo /> : <LightLogo /> }
                             </header>
 
                             {/* side bar navigation area where new boards are created*/ }
@@ -101,7 +107,7 @@ export function AppSidebar(): React.ReactNode {
                                     ) ) }
 
                                     {/* Create new board */ }
-                                    <SidebarMenuItem className="py-2 pl-6 mr-6 rounded-r-full text-L635fc7 hover:text-white hover:bg-L635fc7 ">
+                                    <SidebarMenuItem className="py-2 pl-6 mr-6 rounded-r-full text-L635fc7 hover:text-white hover:bg-L635fc7 cursor-pointer" onClick={ handleAddBoard }>
                                         <SidebarMenuButton asChild className="pl-1 text-base font-bold bg-transparent hover:bg-transparent active:bg-transparent ">
                                             <a >
                                                 <BoardIcon />
@@ -123,13 +129,15 @@ export function AppSidebar(): React.ReactNode {
             </div>
 
             {/* Hide sidebar region */ }
-            { sidebarIcon ? ( <div className="w-10/12 sticky bottom-7 z-10 text-transform:capitalize flex items-center gap-1 pl-6 text-L828fa3 text-base cursor-pointer hover:text-L828fa3/70 rounded-r-full">
-                <SidebarTrigger2 />
-            </div> ) : (
-                <div className=" absolute w-fit bottom-7 z-10 flex items-center gap-1 px-2 text-white bg-L635fc7 rounded-r-full cursor-pointer">
-                    <SidebarTrigger />
-                </div>
-            ) }
+            { sidebarIcon
+                ? ( <div className="w-10/12 sticky bottom-7 z-10 text-transform:capitalize flex items-center gap-1 pl-6 text-L828fa3 text-base cursor-pointer hover:text-L828fa3/70 rounded-r-full">
+                    <SidebarTrigger2 />
+                </div> )
+                : (
+                    <div className=" absolute w-fit bottom-7 z-10 flex items-center gap-1 px-2 text-white bg-L635fc7 rounded-r-full cursor-pointer">
+                        <SidebarTrigger />
+                    </div>
+                ) }
 
         </div>
     )

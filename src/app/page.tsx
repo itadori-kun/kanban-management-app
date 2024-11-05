@@ -8,21 +8,29 @@ import { DarkLogo } from "@/components/icons/darkLogo"
 import { LightLogo } from "@/components/icons/lightLogo"
 
 // import { Todo } from '@/components/todo';
-import { TaskForm } from '@/components/taskForm';
-// import { ProfileForm } from '@/components/profile';
+import { useAppContext } from '@/context';
+
 // import EmptyDashboard from '@/components/emptyDashboard';
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+
+
 export default function Home() {
+
+  const { overlay, placeHolder, handleAddTask, handleOverlay, handleEditBoard, handleDeleteBoard } = useAppContext();
 
   const { theme, systemTheme } = useTheme();
   const [ width, setWidth ] = useState<string>( 'w-[calc(100vw-255px)]' );
   const [ navLogoDisplay, setNavLogoDisplay ] = useState<boolean>( false );
-  const [ overlay, setOverlay ] = useState<boolean>( false );
 
-  // This causes the overlay to be displayed when the card is clicked so that further details can be selected
-  const handleOverlay = () => {
-    setOverlay( !overlay );
-  }
+
+
 
 
   useEffect( () => {
@@ -47,6 +55,7 @@ export default function Home() {
     return () => observer.disconnect(); // Cleanup on unmount
   }, [] );
 
+
   return (
     <div className={ `h-dvh ${ width } overflow-hidden` }>
 
@@ -57,7 +66,7 @@ export default function Home() {
           { navLogoDisplay ? (
             <div className='h-full  flex items-center'>
               {/* check theme status to see what mode it is and then display appropriately */ }
-              { ( theme || systemTheme ) === 'light' ? <DarkLogo /> : <LightLogo /> }
+              { systemTheme === "light" || theme === 'light' ? <DarkLogo /> : <LightLogo /> }
 
               <hr className='ml-8 mr-7 border-r-2 h-full ' />
 
@@ -70,11 +79,30 @@ export default function Home() {
         <div className="flex items-center gap-4">
 
           {/* button is disabled since no column exist yet, no task can be added yet*/ }
-          <button className="text-transform: capitalize rounded-full disabled:opacity-25 bg-L635fc7 px-6 py-4 text-base font-bold text-white" disabled aria-disabled>
+          <button className="text-transform: capitalize rounded-full disabled:opacity-25 bg-L635fc7 px-6 py-4 text-base font-bold text-white" aria-disabled onClick={ handleAddTask }>
             + add new task
           </button>
 
-          <EllipsisVertical className="text-L828fa3" />
+          {/* <EllipsisVertical className="text-L828fa3 cursor-pointer"
+            // onClick={ () => handleDeleteBoard( 'task', 'UI', 'task' ) }
+            onClick={ handleEditBoard }
+          /> */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <EllipsisVertical className='cursor-pointer' />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 mr-4 mt-6 p-4">
+
+              <DropdownMenuItem className='cursor-pointer font-medium text-sm text-L828fa3 hover:text-L828fa3' onClick={ handleEditBoard }>
+                <span>Edit Board</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem className='cursor-pointer text-Lea5555 font-medium text-sm hover:text-Lea5555' onClick={ () => handleDeleteBoard( 'board', 'UI', 'board' ) }>
+                <span>Delete Board</span>
+              </DropdownMenuItem>
+
+            </DropdownMenuContent>
+          </DropdownMenu>
 
         </div>
 
@@ -195,7 +223,9 @@ export default function Home() {
         <section className='w-full h-full bg-blend-overlay bg-L828fa3/25  z-40 grid place-items-center absolute top-0 left-0 cursor-pointer' onClick={ handleOverlay }>
 
           {/* <Todo /> */ }
-          <TaskForm />
+
+          {/* This is used to hold the props in placed based on the elements clicked and the function call on those elements  */ }
+          { placeHolder }
 
           {/* <ProfileForm /> */ }
 

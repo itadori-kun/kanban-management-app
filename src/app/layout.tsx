@@ -4,6 +4,7 @@ import "./globals.css";
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { ThemeProvider } from "@/components/theme-provider"
+import { AppWrapper } from "@/context";
 
 const PlusJakartaSans = localFont( {
   src: "./fonts/PlusJakartaSans-VariableFont_wght.ttf",
@@ -37,14 +38,16 @@ export default function RootLayout( {
           enableSystem
           disableTransitionOnChange
         >
-          <SidebarProvider>
-            <AppSidebar />
-            <main>
-              { children }
-            </main>
-          </SidebarProvider>
+          <AppWrapper>
+            <SidebarProvider>
+              <AppSidebar />
+              <main>
+                { children }
+              </main>
+            </SidebarProvider>
+          </AppWrapper>
         </ThemeProvider>
       </body>
-    </html>
+    </html >
   );
 }

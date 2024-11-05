@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils"
 
 
 import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { X } from "lucide-react"
 
@@ -18,17 +17,9 @@ import {
     FormItem,
     FormLabel,
 } from "@/components/ui/form"
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 
 
-const taskFormSchema = z.object( {
+const newBoardSchema = z.object( {
     title: z
         .string()
         .min( 2, {
@@ -37,8 +28,7 @@ const taskFormSchema = z.object( {
         .max( 30, {
             message: "Username must not be longer than 30 characters.",
         } ),
-    description: z.string().max( 160 ).min( 4 ),
-    subtasks: z
+    columns: z
         .array(
             z.object( {
                 value: z.string(),
@@ -47,36 +37,35 @@ const taskFormSchema = z.object( {
         .optional(),
 } )
 
-type TaskFormValues = z.infer<typeof taskFormSchema>
+type newBoardValues = z.infer<typeof newBoardSchema>
 
 // This can come from your database or API.
-const defaultValues: Partial<TaskFormValues> = {
-    description: "",
-    subtasks: [
+const defaultValues: Partial<newBoardValues> = {
+    columns: [
         { value: "" },
     ],
 }
 
-type TaskFormProps = {
+type newBoardProps = {
     // Define your props here
-    header: string,
-    text: string
+    header: string | "add new board",
+    text: string | "create new board"
 };
 
-export function TaskForm( props: TaskFormProps ) {
+export function AddNewBoard( props: newBoardProps ) {
 
-    const form = useForm<TaskFormValues>( {
-        resolver: zodResolver( taskFormSchema ),
+    const form = useForm<newBoardValues>( {
+        resolver: zodResolver( newBoardSchema ),
         defaultValues,
         mode: "onChange",
     } )
 
     const { fields, append } = useFieldArray( {
-        name: "subtasks",
+        name: "columns",
         control: form.control,
     } )
 
-    function onSubmit( data: TaskFormValues ) {
+    function onSubmit( data: newBoardValues ) {
         console.log( JSON.stringify( data, null, 2 ), 'data' )
     }
 
@@ -96,41 +85,22 @@ export function TaskForm( props: TaskFormProps ) {
                                 <FormItem>
                                     <FormLabel className="text-xs font-bold text-L828fa3 dark:text-white">Title</FormLabel>
                                     <FormControl className="px-4 py-3 h-fit text-sm font-medium ">
-                                        <Input placeholder="e.g. Take coffee break" { ...field } />
+                                        <Input placeholder="e.g. Web Design" { ...field } />
                                     </FormControl>
                                 </FormItem>
                             ) }
                         />
-                        <FormField
-                            control={ form.control }
-                            name="title"
-                            render={ ( { field } ) => (
-                                <FormItem>
 
-                                    <FormLabel className="text-xs font-bold text-L828fa3 dark:text-white">Description</FormLabel>
-                                    <FormControl className="px-4 py-3 h-28 text-sm font-medium">
-                                        <Textarea
-                                            placeholder="e.g. It's always good to take a break. This 15 minute break will recharge the batteries a little"
-                                            className="resize-none"
-                                            { ...field }
-                                        />
-                                    </FormControl>
-
-
-
-                                </FormItem>
-                            ) }
-                        />
                         <div>
                             { fields.map( ( field, index ) => (
                                 <FormField
                                     control={ form.control }
                                     key={ field.id }
-                                    name={ `subtasks.${ index }.value` }
+                                    name={ `columns.${ index }.value` }
                                     render={ ( { field } ) => (
                                         <FormItem>
                                             <FormLabel className={ `${ cn( index !== 0 && "sr-only" ) } text-xs font-bold text-L828fa3 dark:text-white` }>
-                                                Subtasks
+                                                Columns
                                             </FormLabel>
                                             <div className="flex gap-4 items-center mb-3">
                                                 <FormControl className="px-4 py-3 h-fit text-sm font-medium">
@@ -149,36 +119,12 @@ export function TaskForm( props: TaskFormProps ) {
                                 className="mt-3 w-full bg-L635fc7/10 text-L635fc7 dark:bg-white dark:text-L635fc7 text-sm font-bold rounded-full py-2 h-10 dark:hover:bg-white/70 hover:bg-L635fc7/70"
                                 onClick={ () => append( { value: "" } ) }
                             >
-                                + Add New Subtask
+                                + Add New Column
                             </Button>
                         </div>
 
-                        <FormField
-                            control={ form.control }
-                            name="title"
-                            render={ ( { field } ) => (
-                                <FormItem>
 
-                                    <FormLabel className="text-xs font-bold text-L828fa3 dark:text-white">Status</FormLabel>
-                                    <Select aria-labelledby="current status">
-                                        <FormControl>
-                                            <SelectTrigger className="w-full px-4 py-3 h-fit text-L828fa3 text-sm font-medium text-black border-L828fa3/25 dark:text-white">
-                                                <SelectValue placeholder="Todo" { ...field } />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem value="todo">Todo</SelectItem>
-                                                <SelectItem value="doing">Doing</SelectItem>
-                                                <SelectItem value="done">Done</SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-
-                                </FormItem>
-                            ) }
-                        />
-                        <Button type="submit" className="bg-L635fc7 text-white w-full rounded-full py-2 h-10 text-sm font-bold hover:bg-La8a4ff text-transform: capitalize">{ props.text }</Button>
+                        <Button type="submit" className="bg-L635fc7 text-white w-full rounded-full py-2 h-10 text-sm font-bold hover:bg-L635fc7/70 text-transform: capitalize">{ props.text }</Button>
                     </form>
                 </Form>
 
