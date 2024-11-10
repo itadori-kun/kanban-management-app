@@ -108,7 +108,7 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
         setOverlay( !overlay )
     }
 
-    const handleDeleteBoard = ( header: string, text: string, type: string, id: string = singleCard.id ): void => {
+    const handleDeleteBoard = ( header: string, text: string, type: string, id: string ): void => {
         setPlaceHolder( <DeleteSection header={ header } text={ text } type={ type } id={ id } /> );
         // setOverlay( !overlay )
     }
