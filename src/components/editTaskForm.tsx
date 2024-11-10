@@ -46,25 +46,15 @@ const taskFormSchema = z.object( {
 
 type TaskFormValues = z.infer<typeof taskFormSchema>
 
-// This can come from your database or API.
-const defaultValues: Partial<TaskFormValues> = {
-    title: "",
-    description: "",
-    subtasks: [
-        { value: "" },
-    ],
-    status: "todo",
-}
 
 
-
-export function TaskForm() {
+export function EditTaskForm() {
     const { reset } = useForm()
-    const { handleCloseOverlay, cards } = useAppContext()
+    const { handleCloseOverlay, singleCard } = useAppContext()
 
     const form = useForm<TaskFormValues>( {
         resolver: zodResolver( taskFormSchema ),
-        defaultValues,
+        defaultValues: singleCard || {},
         mode: "onChange",
     } )
 
@@ -73,20 +63,13 @@ export function TaskForm() {
         control: form.control,
     } )
 
+
     async function onSubmit( data: TaskFormValues ) {
 
-        // Determine the new unique `id` based on the highest existing id but we are using cards since in the context we have cards which carries the entire database data
-        const latestId = cards.reduce( ( maxId: number, card: { id: string } ) => Math.max( maxId, parseInt( card?.id ) ), 1 );
-        const newId = latestId + 1;
+        const dataFile = JSON.stringify( data, null, 2 )
 
-        // Add the new `id` to the data
-        const newData = { ...data, id: newId.toString() };
-        // convert the data to a string
-        const dataFile = JSON.stringify( newData, null, 2 )
-
-        // send the data to the server using a Post request
-        const resp = await fetch( `http://localhost:4000/todo`, {
-            method: 'POST',
+        const resp = await fetch( `http://localhost:4000/todo/${ singleCard.id }`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -107,7 +90,7 @@ export function TaskForm() {
 
             <div className='max-w-[30rem] w-full rounded-md p-8 bg-white dark:bg-L20212c'>
 
-                <h2 className="text-transform: capitalize text-black dark:text-white font-bold text-lg mb-6">add new task</h2>
+                <h2 className="text-transform: capitalize text-black dark:text-white font-bold text-lg mb-6">edit task</h2>
 
                 <Form { ...form }>
                     <form onSubmit={ form.handleSubmit( onSubmit ) } className="space-y-8 w-full">
@@ -201,7 +184,6 @@ export function TaskForm() {
                         />
                         <Button type="submit" className="bg-L635fc7 text-white w-full rounded-full py-2 h-10 text-sm font-bold hover:bg-La8a4ff text-transform: capitalize">save changes</Button>
                     </form>
-
                 </Form>
 
             </div>

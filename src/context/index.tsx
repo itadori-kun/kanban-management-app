@@ -6,12 +6,14 @@ import { AddNewBoard } from "@/components/addNewBoard";
 import { EditBoard } from "@/components/editNewBoard";
 import { DeleteSection } from "@/components/deleteSection";
 import { Todo } from "@/components/todo";
+import { EditTaskForm } from "@/components/editTaskForm";
 
 
 interface CardProps {
     id: string;
     title: string;
-    subtasks: string[];
+    description: string;
+    subtasks: { value: string }[];
     status: string;
 }
 
@@ -21,12 +23,16 @@ interface AppContextProps {
     placeHolder: JSX.Element;
     setPlaceHolder: React.Dispatch<React.SetStateAction<JSX.Element>>;
     cards: CardProps[];
+    cardId: string,
+    setCardId: React.Dispatch<React.SetStateAction<string>>,
+    singleCard: CardProps,
+    cardComponentId: ( taskId: string ) => void;
     cardComponent: () => void;
     handleOverlayOpen: () => void;
     handleAddTask: () => void;
     handleAddBoard: () => void;
     handleEditBoard: () => void;
-    handleDeleteBoard: ( header: string, text: string, type: string ) => void;
+    handleDeleteBoard: ( header: string, text: string, type: string, id: string ) => void;
     handleEditTask: () => void;
     handleCloseOverlay: () => void;
 }
@@ -37,6 +43,16 @@ const AppContext = createContext<AppContextProps>( {
     placeHolder: <></>,
     setPlaceHolder: () => { },
     cards: [],
+    cardId: "",
+    singleCard: {
+        id: "",
+        title: "",
+        description: "",
+        subtasks: [],
+        status: ""
+    },
+    setCardId: () => { },
+    cardComponentId: () => { },
     cardComponent: () => { },
     handleOverlayOpen: () => { },
     handleAddTask: () => { },
@@ -48,28 +64,36 @@ const AppContext = createContext<AppContextProps>( {
 } );
 
 export function AppWrapper( { children }: { children: React.ReactNode } ) {
-
+    const [ singleCard, setSingleCard ] = useState<CardProps>( {
+        id: "",
+        title: "",
+        description: "",
+        subtasks: [],
+        status: ""
+    } )
 
     const [ overlay, setOverlay ] = useState<boolean>( false );
     const [ placeHolder, setPlaceHolder ] = useState<JSX.Element>( <></> );
     const [ cards, setCards ] = useState<CardProps[]>( [] );
+    const [ cardId, setCardId ] = useState( "" )
 
 
     const handleOverlayOpen = (): void => {
         setPlaceHolder( <Todo /> );
         setOverlay( !overlay );
+
     }
 
     // This causes the overlay to be displayed when the edit task button is clicked so that further details can be selected
     const handleEditTask = (): void => {
 
-        setPlaceHolder( <TaskForm header="Edit task" text='save changes' /> );
+        setPlaceHolder( <EditTaskForm /> );
         // setOverlay( false );
     }
 
     // This causes the overlay to be displayed when the add task button is clicked so that further details can be selected
     const handleAddTask = (): void => {
-        setPlaceHolder( <TaskForm header="Add new task" text='save changes' /> );
+        setPlaceHolder( <TaskForm /> );
         setOverlay( !overlay );
     }
 
@@ -84,8 +108,8 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
         setOverlay( !overlay )
     }
 
-    const handleDeleteBoard = ( header: string, text: string, type: string ): void => {
-        setPlaceHolder( <DeleteSection header={ header } text={ text } type={ type } /> );
+    const handleDeleteBoard = ( header: string, text: string, type: string, id: string = singleCard.id ): void => {
+        setPlaceHolder( <DeleteSection header={ header } text={ text } type={ type } id={ id } /> );
         // setOverlay( !overlay )
     }
 
@@ -94,11 +118,15 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
     }
 
     const cardComponent = async () => {
-        await fetch( `http://localhost:4000/todo` ).then( res => res.json() ).then( data => {
-            setCards( data );
-        } );
+        const url = await fetch( `http://localhost:4000/todo` )
+        const response = await url.json()
+        setCards( response )
     }
-
+    const cardComponentId = async ( taskId: string ) => {
+        const urlGet = await fetch( `http://localhost:4000/todo/${ taskId }` )
+        const response = await urlGet.json()
+        setSingleCard( response )
+    }
 
 
     return (
@@ -109,11 +137,16 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
             placeHolder,
             cards,
             cardComponent,
+            cardId,
+            setCardId,
+            singleCard,
+            cardComponentId,
             handleOverlayOpen,
             handleAddTask,
             handleAddBoard,
             handleEditBoard,
             handleDeleteBoard,
+
             handleEditTask,
             handleCloseOverlay,
         } }>

@@ -26,7 +26,7 @@ import {
 
 export function Todo() {
 
-    const { handleDeleteBoard, handleEditTask } = useAppContext();
+    const { handleDeleteBoard, handleEditTask, singleCard } = useAppContext();
 
     return (
         <section className='w-full h-full grid place-items-center'>
@@ -35,7 +35,11 @@ export function Todo() {
 
                 <div className='flex justify-between items-center mb-6'>
 
-                    <h2 className='text-black dark:text-white font-bold text-lg'>Research pricing points of various competitors and trial different business models</h2>
+                    <h2 className='text-black dark:text-white font-bold text-lg first-letter:text-transform: capitalize'>
+                        { singleCard?.title }
+
+                        {/* Research pricing points of various competitors and trial different business models */ }
+                    </h2>
                     {/* <EllipsisVertical className='text-L828fa3 size-11' /> */ }
 
                     <DropdownMenu>
@@ -50,7 +54,7 @@ export function Todo() {
                                 <span>Edit Task</span>
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem className='cursor-pointer text-Lea5555 font-medium text-sm hover:text-Lea5555' onClick={ () => handleDeleteBoard( 'task', 'UI', 'task' ) }>
+                            <DropdownMenuItem className='cursor-pointer text-Lea5555 font-medium text-sm hover:text-Lea5555' onClick={ () => handleDeleteBoard( 'task', 'UI', 'task', singleCard.id ) }>
                                 <span>Delete Task</span>
                             </DropdownMenuItem>
 
@@ -61,7 +65,10 @@ export function Todo() {
 
                 <div className='mb-6'>
 
-                    <p className='text-sm text-L828fa3'>We know what we&apos;re planning to build for version one. Now we need to finalise the first pricing model we&apos;ll use. Keep iterating the subtasks until we have a coherent proposition.</p>
+                    <p className='text-sm text-L828fa3 first-letter:text-transform: capitalize'>
+                        { singleCard.description }
+                        {/* We know what we&apos;re planning to build for version one. Now we need to finalise the first pricing model we&apos;ll use. Keep iterating the subtasks until we have a coherent proposition. */ }
+                    </p>
 
                 </div>
 
@@ -72,21 +79,14 @@ export function Todo() {
                     <form>
 
                         <ul className="mb-6">
-
-                            <li className="flex items-center space-x-2 p-2 bg-L635fc7/15 w-full gap-4 rounded-sm mb-2">
-                                <Checkbox id="terms" className='accent-L635fc7 w-4 h-4 bg-white' checked />
-                                <Label htmlFor="terms" className='font-bold text-xs text-black line-through text-L828fa3'>Research competitor pricing and business model</Label>
-                            </li>
-
-                            <li className="flex items-center space-x-2 p-2 bg-L635fc7/15 w-full gap-4 rounded-sm mb-2">
-                                <Checkbox id="terms" className='accent-L635fc7 w-4 h-4 bg-white' checked />
-                                <Label htmlFor="terms" className='font-bold text-xs text-black line-through text-L828fa3'>Outline a business model that works for our solution</Label>
-                            </li>
-
-                            <li className="flex items-center space-x-2 p-2 bg-L635fc7/15 w-full gap-4 rounded-sm mb-2">
-                                <Checkbox id="terms" className='accent-L635fc7 w-4 h-4 bg-white' />
-                                <Label htmlFor="terms" className='font-bold text-xs text-black dark:text-white'>Talk to potential customers about proposed solution and ask for fair price expectancy</Label>
-                            </li>
+                            { singleCard.subtasks.map( ( subtask, index ) => (
+                                <li className="flex items-center space-x-2 p-2 bg-L635fc7/15 w-full gap-4 rounded-sm mb-2" key={ index }>
+                                    <Checkbox id="terms" className='accent-L635fc7 w-4 h-4 bg-white' checked />
+                                    <Label htmlFor="terms" className='font-bold text-xs text-black line-through text-L828fa3'>
+                                        { subtask.value }
+                                    </Label>
+                                </li>
+                            ) ) }
 
                         </ul>
 
@@ -95,8 +95,8 @@ export function Todo() {
                             <p className="text-L828fa3 mb-2 text-xs dark:text-white">Current Status</p>
 
                             <Select aria-labelledby="current status">
-                                <SelectTrigger className="w-full text-L828fa3 text-sm text-black border-L828fa3/25 dark:text-white">
-                                    <SelectValue placeholder="Doing" />
+                                <SelectTrigger className="w-full text-L828fa3 text-sm text-black border-L828fa3/25 dark:text-white text-transform: capitalize">
+                                    <SelectValue placeholder={ singleCard.status } />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
@@ -115,7 +115,7 @@ export function Todo() {
 
             </div>
 
-        </section>
+        </section >
 
     )
 }

@@ -30,9 +30,6 @@ export default function Home() {
   const [ navLogoDisplay, setNavLogoDisplay ] = useState<boolean>( false );
 
 
-
-
-
   useEffect( () => {
 
     const sidebarItems = document.querySelector( '.group' ) as HTMLElement;
@@ -56,13 +53,10 @@ export default function Home() {
   }, [] );
 
 
-
-
-
   return (
-    <div className={ `h-dvh ${ width } overflow-hidden` }>
+    <div className={ `h-dvh ${ width } overflow-hidden ` }>
 
-      <header className="px-6 flex items-center justify-between dark:bg-L2b2c37 bg-white h-24">
+      <header className="px-6 flex items-center justify-between dark:bg-L2b2c37 bg-white h-24 ">
 
         <div className='flex items-center h-full'>
           {/* check to see if the sidebar is expanded so as to display the logo */ }
@@ -107,16 +101,17 @@ export default function Home() {
 
       </header>
 
-      {/* Empty state with no column or task added to dashboard */ }
-      <section className={ `${ width } h-screen  bg-Lf4f7fd p-6 dark:bg-black` }>
 
-        <article className='flex gap-6 items-start'>
+      {/* Empty state with no column or task added to dashboard */ }
+      <section className={ `${ width }   bg-Lf4f7fd p-6 dark:bg-black overflow-y-auto` }>
+
+        <article className='flex gap-6 items-start min-h-fit'>
 
           <Card />
 
           <section className='w-1/5'>
             <div className='grid place-items-center bg-L828fa3/20 h-screen rounded-md mt-10'>
-              <button className='text-transform: capitalize text-2xl font-bold text-L828fa3 text-pretty cursor-pointer hover:text-L635fc7 dark:hover:text-L635fc7'>
+              <button className='h-inherit text-transform: capitalize text-2xl font-bold text-L828fa3 text-pretty cursor-pointer hover:text-L635fc7 dark:hover:text-L635fc7'>
                 + New Column
               </button>
             </div>
@@ -144,7 +139,6 @@ export default function Home() {
         </section>
       ) }
       {/* ToDO  will later be moved to the components folder */ }
-
 
     </div>
   );
