@@ -1,12 +1,17 @@
 
+import { useAppContext } from "@/context";
+
 type Props = {
     // Define your props here
     header: string,
-    text: string | "",
-    type: string | "board" | "task",
+    text: string,
+    type: string,
 };
 
 export function DeleteSection( props: Props ) {
+
+    const { handleCloseOverlay } = useAppContext();
+
     return (
         <section className="w-full h-full grid place-items-center">
 
@@ -20,7 +25,7 @@ export function DeleteSection( props: Props ) {
 
                 <div className="flex justify-between items-center gap-4">
                     <button className="bg-Lea5555 text-white rounded-full text-sm font-bold p-2 w-full hover:bg-Lff9898">Delete</button>
-                    <button className="bg-L635fc7/10 text-L635fc7 rounded-full text-sm font-bold p-2 w-full dark:bg-white  dark:hover:bg-white/90">Cancel</button>
+                    <button className="bg-L635fc7/10 text-L635fc7 rounded-full text-sm font-bold p-2 w-full dark:bg-white  dark:hover:bg-white/90" onClick={ handleCloseOverlay }>Cancel</button>
                 </div>
 
             </div>

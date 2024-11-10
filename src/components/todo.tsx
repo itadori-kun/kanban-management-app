@@ -1,5 +1,7 @@
 "use client"
 
+import { useAppContext } from "@/context"
+
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { EllipsisVertical } from "lucide-react"
@@ -12,11 +14,19 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 
 
 
 export function Todo() {
+
+    const { handleDeleteBoard, handleEditTask } = useAppContext();
 
     return (
         <section className='w-full h-full grid place-items-center'>
@@ -26,7 +36,26 @@ export function Todo() {
                 <div className='flex justify-between items-center mb-6'>
 
                     <h2 className='text-black dark:text-white font-bold text-lg'>Research pricing points of various competitors and trial different business models</h2>
-                    <EllipsisVertical className='text-L828fa3 size-11' />
+                    {/* <EllipsisVertical className='text-L828fa3 size-11' /> */ }
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <EllipsisVertical className='cursor-pointer text-L828fa3 size-11' />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-52 p-2">
+
+                            <DropdownMenuItem className='cursor-pointer font-medium text-sm text-L828fa3 hover:text-L828fa3' onClick={ () => {
+                                handleEditTask()
+                            } }>
+                                <span>Edit Task</span>
+                            </DropdownMenuItem>
+
+                            <DropdownMenuItem className='cursor-pointer text-Lea5555 font-medium text-sm hover:text-Lea5555' onClick={ () => handleDeleteBoard( 'task', 'UI', 'task' ) }>
+                                <span>Delete Task</span>
+                            </DropdownMenuItem>
+
+                        </DropdownMenuContent>
+                    </DropdownMenu>
 
                 </div>
 

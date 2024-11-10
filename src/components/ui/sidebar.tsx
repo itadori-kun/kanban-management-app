@@ -288,7 +288,7 @@ const SidebarTrigger = React.forwardRef<
 SidebarTrigger.displayName = "SidebarTrigger"
 
 
-// Duplicated the exisiting SidebarTrigger to SidebarTrigger2 so that i could toggle the sidebar display and its components from line 292 to 318
+// Duplicated the existing SidebarTrigger to SidebarTrigger2 so that i could toggle the sidebar display and its components from line 292 to 318
 const SidebarTrigger2 = React.forwardRef<
   React.ElementRef<typeof Button>,
   React.ComponentProps<typeof Button>
@@ -301,7 +301,7 @@ const SidebarTrigger2 = React.forwardRef<
       data-sidebar="trigger"
       variant="inherit"
       size="icon"
-      className={ cn( "h-8 w-fit text-base", className ) }
+      className={ cn( "h-8 w-fit text-base bg-transparent", className ) }
       onClick={ ( event ) => {
         onClick?.( event )
         toggleSidebar()

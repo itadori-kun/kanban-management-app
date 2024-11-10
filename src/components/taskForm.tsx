@@ -1,5 +1,7 @@
 "use client"
 
+import { useAppContext } from "@/context"
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useFieldArray, useForm } from "react-hook-form"
@@ -17,11 +19,11 @@ import {
     FormField,
     FormItem,
     FormLabel,
+    FormMessage,
 } from "@/components/ui/form"
 import {
     Select,
     SelectContent,
-    SelectGroup,
     SelectItem,
     SelectTrigger,
     SelectValue,
@@ -29,32 +31,29 @@ import {
 
 
 const taskFormSchema = z.object( {
-    title: z
-        .string()
-        .min( 2, {
-            message: "Username must be at least 2 characters.",
-        } )
-        .max( 30, {
-            message: "Username must not be longer than 30 characters.",
-        } ),
-    description: z.string().max( 160 ).min( 4 ),
+    title: z.string().min( 1, { message: "Can't be empty" } ),
+    description: z.string().min( 2, {
+        message: "Description must be at least 2 characters long",
+    } ),
     subtasks: z
         .array(
             z.object( {
-                value: z.string(),
+                value: z.string().min( 1, { message: "Can't be empty" } ),
             } )
-        )
-        .optional(),
+        ),
+    status: z.string(),
 } )
 
 type TaskFormValues = z.infer<typeof taskFormSchema>
 
 // This can come from your database or API.
 const defaultValues: Partial<TaskFormValues> = {
+    title: "",
     description: "",
     subtasks: [
         { value: "" },
     ],
+    status: "todo",
 }
 
 type TaskFormProps = {
@@ -64,6 +63,8 @@ type TaskFormProps = {
 };
 
 export function TaskForm( props: TaskFormProps ) {
+    const { reset } = useForm()
+    const { handleCloseOverlay, cards } = useAppContext()
 
     const form = useForm<TaskFormValues>( {
         resolver: zodResolver( taskFormSchema ),
@@ -76,8 +77,52 @@ export function TaskForm( props: TaskFormProps ) {
         control: form.control,
     } )
 
-    function onSubmit( data: TaskFormValues ) {
-        console.log( JSON.stringify( data, null, 2 ), 'data' )
+
+    async function onSubmit( data: TaskFormValues ) {
+
+        // Determine the new unique `id` based on the highest existing id but we are using cards since in the context we have cards which carries the entire database data
+        const latestId = cards.reduce( ( maxId: number, card: { id: string } ) => Math.max( maxId, parseInt( card?.id ) ), 1 );
+        const newId = latestId + 1;
+
+        // Add the new `id` to the data
+        const newData = { ...data, id: newId.toString() };
+        // convert the data to a string
+        const dataFile = JSON.stringify( newData, null, 2 )
+
+        if ( props.header.includes( 'new' ) ) {
+            // send the data to the server using a Post request
+            const resp = await fetch( `http://localhost:4000/todo`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: dataFile
+            } );
+            // check if the response is ok
+            if ( !resp.ok ) {
+                throw new Error( `Response status: ${ resp.status }` )
+            }
+            // reset the form and close the overlay
+            reset()
+            handleCloseOverlay()
+
+        } else {
+            console.log( data, 'data' )
+            // const newData = { ...data, id: count };
+            // const dataFile = JSON.stringify( newData, null, 2 )
+            // const resp = await fetch( `http://localhost:4000/todo/${ e }`, {
+            //     method: 'PUT',
+            //     body: dataFile
+            // } );
+
+            // if ( !resp.ok ) {
+            //     throw new Error( `Response status: ${ resp.status }` )
+            // }
+
+        }
+
+
+        // console.log( dataFile, 'data' )
     }
 
     return (
@@ -95,15 +140,17 @@ export function TaskForm( props: TaskFormProps ) {
                             render={ ( { field } ) => (
                                 <FormItem>
                                     <FormLabel className="text-xs font-bold text-L828fa3 dark:text-white">Title</FormLabel>
-                                    <FormControl className="px-4 py-3 h-fit text-sm font-medium ">
+                                    <FormControl className="px-4 py-3 h-fit text-sm font-medium">
                                         <Input placeholder="e.g. Take coffee break" { ...field } />
                                     </FormControl>
+                                    <FormMessage className="text-Lea5555 text-xs" />
                                 </FormItem>
                             ) }
                         />
+                        {/* <span className="text-Lea5555 text-sm">Can&apos;t be empty</span> */ }
                         <FormField
                             control={ form.control }
-                            name="title"
+                            name="description"
                             render={ ( { field } ) => (
                                 <FormItem>
 
@@ -115,9 +162,7 @@ export function TaskForm( props: TaskFormProps ) {
                                             { ...field }
                                         />
                                     </FormControl>
-
-
-
+                                    <FormMessage className="text-Lea5555 text-xs" />
                                 </FormItem>
                             ) }
                         />
@@ -132,12 +177,13 @@ export function TaskForm( props: TaskFormProps ) {
                                             <FormLabel className={ `${ cn( index !== 0 && "sr-only" ) } text-xs font-bold text-L828fa3 dark:text-white` }>
                                                 Subtasks
                                             </FormLabel>
-                                            <div className="flex gap-4 items-center mb-3">
-                                                <FormControl className="px-4 py-3 h-fit text-sm font-medium">
+                                            <div className="flex gap-4 items-center mb-3 relative">
+                                                <FormControl className="px-4 py-3 h-fit text-sm font-medium border-Lea5555 ">
                                                     <Input placeholder="e.g. Make coffee" { ...field } />
                                                 </FormControl>
-                                                <X className="text-L828fa3" />
+                                                <X className="text-L828fa3 dark:text-Lea5555" />
                                             </div>
+                                            <FormMessage className="text-Lea5555 text-xs" />
                                         </FormItem>
                                     ) }
                                 />
@@ -155,26 +201,24 @@ export function TaskForm( props: TaskFormProps ) {
 
                         <FormField
                             control={ form.control }
-                            name="title"
+                            name="status"
                             render={ ( { field } ) => (
                                 <FormItem>
 
                                     <FormLabel className="text-xs font-bold text-L828fa3 dark:text-white">Status</FormLabel>
-                                    <Select aria-labelledby="current status">
+                                    <Select aria-labelledby="current status" onValueChange={ field.onChange } defaultValue={ field.value }>
                                         <FormControl>
                                             <SelectTrigger className="w-full px-4 py-3 h-fit text-L828fa3 text-sm font-medium text-black border-L828fa3/25 dark:text-white">
-                                                <SelectValue placeholder="Todo" { ...field } />
+                                                <SelectValue placeholder="Todo" />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem value="todo">Todo</SelectItem>
-                                                <SelectItem value="doing">Doing</SelectItem>
-                                                <SelectItem value="done">Done</SelectItem>
-                                            </SelectGroup>
+                                            <SelectItem value="todo">Todo</SelectItem>
+                                            <SelectItem value="doing">Doing</SelectItem>
+                                            <SelectItem value="done">Done</SelectItem>
                                         </SelectContent>
                                     </Select>
-
+                                    {/* <FormMessage /> */ }
                                 </FormItem>
                             ) }
                         />

@@ -44,11 +44,9 @@ const items = [
 export function AppSidebar(): JSX.Element {
 
     const { handleAddBoard } = useAppContext();
+
     const [ sidebarIcon, setSidebarIcon ] = useState<boolean>( true );
     const [ display, setDisplay ] = useState<string>( 'block' );
-
-
-
 
 
     useEffect( () => {
@@ -95,8 +93,8 @@ export function AppSidebar(): JSX.Element {
 
                                     {/* populate existing board from storage or database*/ }
                                     { items.map( ( item ) => (
-                                        <SidebarMenuItem key={ item.title } className="py-2 pl-6 mr-6 rounded-r-full text-L828fa3  hover:text-white hover:bg-L635fc7 active:bg-L635fc7 ">
-                                            <SidebarMenuButton asChild className="pl-1 text-base font-bold bg-transparent hover:bg-transparent active:bg-transparent ">
+                                        <SidebarMenuItem key={ item.title } className="py-2 pl-6 mr-6 rounded-r-full text-L828fa3  active:text-white dark:hover:bg-white hover:bg-L635fc7/10 hover:text-L635fc7 active:bg-L635fc7">
+                                            <SidebarMenuButton asChild className="pl-1 text-base font-bold bg-transparent hover:bg-transparent hover:text-inherit active:text-inherit active:bg-transparent ">
                                                 <a href={ item.url }>
                                                     <item.icon />
                                                     <span>{ item.title }</span>
@@ -107,8 +105,8 @@ export function AppSidebar(): JSX.Element {
                                     ) ) }
 
                                     {/* Create new board */ }
-                                    <SidebarMenuItem className="py-2 pl-6 mr-6 rounded-r-full text-L635fc7 hover:text-white hover:bg-L635fc7 cursor-pointer" onClick={ handleAddBoard }>
-                                        <SidebarMenuButton asChild className="pl-1 text-base font-bold bg-transparent hover:bg-transparent active:bg-transparent ">
+                                    <SidebarMenuItem className="py-2 pl-6 mr-6 rounded-r-full text-L635fc7 active:text-white hover:bg-white dark:hover:bg-white hover:bg-L635fc7/10 hover:text-L635fc7 active:bg-L635fc7 cursor-pointer" onClick={ handleAddBoard }>
+                                        <SidebarMenuButton asChild className="pl-1 text-base font-bold bg-transparent hover:bg-transparent active:bg-transparent hover:text-inherit active:text-inherit">
                                             <a >
                                                 <BoardIcon />
                                                 <span>+ Create New Board</span>
@@ -130,11 +128,11 @@ export function AppSidebar(): JSX.Element {
 
             {/* Hide sidebar region */ }
             { sidebarIcon
-                ? ( <div className="w-10/12 sticky bottom-7 z-10 text-transform:capitalize flex items-center gap-1 pl-6 text-L828fa3 text-base cursor-pointer hover:text-L828fa3/70 rounded-r-full">
+                ? ( <div className="w-10/12 sticky bottom-4 z-10 text-transform:capitalize flex items-center gap-1 pl-6 py-1 text-L828fa3 text-base cursor-pointer active:text-white dark:hover:bg-white hover:bg-L635fc7/10 hover:text-L635fc7 active:bg-L635fc7 rounded-r-full">
                     <SidebarTrigger2 />
                 </div> )
                 : (
-                    <div className=" absolute w-fit bottom-7 z-10 flex items-center gap-1 px-2 text-white bg-L635fc7 rounded-r-full cursor-pointer">
+                    <div className=" absolute w-fit bottom-4 z-10 flex items-center gap-1 px-2 text-white bg-L635fc7 rounded-r-full cursor-pointer">
                         <SidebarTrigger />
                     </div>
                 ) }
