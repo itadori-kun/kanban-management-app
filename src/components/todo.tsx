@@ -54,7 +54,7 @@ export function Todo() {
                                 <span>Edit Task</span>
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem className='cursor-pointer text-Lea5555 font-medium text-sm hover:text-Lea5555' onClick={ () => handleDeleteBoard( 'task', 'UI', 'task', singleCard.id ) }>
+                            <DropdownMenuItem className='cursor-pointer text-Lea5555 font-medium text-sm hover:text-Lea5555' onClick={ () => handleDeleteBoard( 'task', 'UI', 'task', `${ singleCard.id }` ) }>
                                 <span>Delete Task</span>
                             </DropdownMenuItem>
 
