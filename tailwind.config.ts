@@ -9,6 +9,9 @@ const config: Config = {
   ],
 	theme: {
     	extend: {
+			screens: {
+				sm: '700px',
+			},
     		fontFamily: {
     			plusJakarta: ['plus-jakarta-sans', 'sans-serif']
     		},

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { TaskForm } from "@/components/taskForm";
 import { AddNewBoard } from "@/components/addNewBoard";
 import { EditBoard } from "@/components/editNewBoard";
@@ -24,6 +24,10 @@ interface AppContextProps {
     setPlaceHolder: React.Dispatch<React.SetStateAction<JSX.Element>>;
     cards: CardProps[];
     cardId: string,
+    width: string,
+    navLogoDisplay: boolean,
+    sidebarIcon: boolean,
+    display: string,
     setCardId: React.Dispatch<React.SetStateAction<string>>,
     singleCard: CardProps,
     cardComponentId: ( taskId: string ) => void;
@@ -44,6 +48,10 @@ const AppContext = createContext<AppContextProps>( {
     setPlaceHolder: () => { },
     cards: [],
     cardId: "",
+    width: "",
+    navLogoDisplay: false,
+    sidebarIcon: true,
+    display: "block",
     singleCard: {
         id: "",
         title: "",
@@ -76,6 +84,10 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
     const [ placeHolder, setPlaceHolder ] = useState<JSX.Element>( <></> );
     const [ cards, setCards ] = useState<CardProps[]>( [] );
     const [ cardId, setCardId ] = useState( "" )
+    const [ width, setWidth ] = useState<string>( 'w-[calc(100vw-16rem)]' );
+    const [ navLogoDisplay, setNavLogoDisplay ] = useState<boolean>( false );
+    const [ sidebarIcon, setSidebarIcon ] = useState<boolean>( true );
+    const [ display, setDisplay ] = useState<string>( 'block' );
 
 
     const handleOverlayOpen = (): void => {
@@ -118,15 +130,56 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
     }
 
     const cardComponent = async () => {
-        const url = await fetch( `http://localhost:4000/todo` )
-        const response = await url.json()
-        setCards( response )
+        try {
+            const url = await fetch( `http://localhost:4000/todo` );
+            if ( !url.ok ) {
+                throw new Error( `HTTP error! status: ${ url.status }` );
+            }
+            const response = await url.json();
+            if ( !Array.isArray( response ) || !response.length ) {
+                throw new Error( 'Failed to fetch data' );
+            }
+            setCards( response );
+        } catch ( error ) {
+            console.error( 'Error fetching data:', error );
+        }
     }
     const cardComponentId = async ( taskId: string ) => {
         const urlGet = await fetch( `http://localhost:4000/todo/${ taskId }` )
         const response = await urlGet.json()
+        if ( !response || Object.keys( response ).length === 0 ) {
+            throw new Error( 'Failed to fetch data' )
+        }
         setSingleCard( response )
     }
+
+    useEffect( () => {
+
+        const sidebarItems = document.querySelector( '.group' ) as HTMLElement;
+
+        const updateWidth = () => {
+            if ( sidebarItems.dataset.state === 'expanded' ) {
+                setWidth( 'sm:w-[calc(100vw-16rem)]' );
+                setNavLogoDisplay( navLogoDisplay )
+                setSidebarIcon( sidebarIcon );
+                setDisplay( 'block' );
+            } else {
+                setWidth( 'sm:w-dvw' );
+                setNavLogoDisplay( !navLogoDisplay )
+                setSidebarIcon( !sidebarIcon );
+                setDisplay( 'hidden' );
+            }
+
+
+        };
+
+        updateWidth(); // Initial check
+
+        const observer = new MutationObserver( updateWidth );
+        observer.observe( sidebarItems, { attributes: true, attributeFilter: [ 'data-state' ] } );
+
+        return () => observer.disconnect(); // Cleanup on unmount
+    }, [ width ] );
 
 
     return (
@@ -138,6 +191,10 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
             cards,
             cardComponent,
             cardId,
+            width,
+            navLogoDisplay,
+            sidebarIcon,
+            display,
             setCardId,
             singleCard,
             cardComponentId,

@@ -28,9 +28,9 @@ export default function RootLayout( {
   children: React.ReactNode;
 }> ) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning >
       <body
-        className={ `${ PlusJakartaSans.variable } ${ PlusJakartaSansItalic.variable } antialiased overscroll-none` }
+        className={ `${ PlusJakartaSans.variable } ${ PlusJakartaSansItalic.variable } antialiased h-screen ` }
       >
         <ThemeProvider
           attribute="class"

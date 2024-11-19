@@ -26,17 +26,17 @@ export function Card() {
     return (
         <>
             { mounted.current && (
-                <section className='w-1/5' >
+                <section className='w-[280px]' >
                     {/* column heading */ }
-                    <div className='mb-6 flex items-center gap-3'>
+                    <div className='w-[280px] mb-6 flex items-center gap-3'>
                         <div className='w-4 h-4 rounded-full bg-[#49c4e5]'></div>
                         <h3 className='text-transform: uppercase tracking-widest text-xs font-bold text-L828fa3'>Todo ( 4 )</h3>
                     </div>
 
                     {/* card section where they are populated */ }
-                    <ul>
+                    <ul className="w-[280px]">
                         { cards.length > 0 && cards.map( ( card ) => (
-                            <li className='px-4 py-6 shadow-sm bg-white dark:bg-L2b2c37 rounded-md mb-5 text-pretty cursor-pointer hover:text-L635fc7 text-black dark:text-white dark:hover:text-L635fc7' onClick={ () => {
+                            <li className=' w-full px-4 py-6 shadow-sm bg-white dark:bg-L2b2c37 rounded-md mb-5 text-pretty cursor-pointer hover:text-L635fc7 text-black dark:text-white dark:hover:text-L635fc7' onClick={ () => {
                                 cardComponentId( card.id )
                                 handleOverlayOpen()
                             } } key={ card.id }>

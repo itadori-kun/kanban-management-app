@@ -70,7 +70,7 @@ export function AddNewBoard( props: newBoardProps ) {
     }
 
     return (
-        <section className="w-full h-full grid place-items-center">
+        <section className="w-full h-full grid place-items-center px-2 sm:px-0">
 
             <div className='max-w-[30rem] w-full rounded-md p-8 bg-white dark:bg-L20212c'>
 

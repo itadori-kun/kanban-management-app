@@ -29,7 +29,7 @@ export function Todo() {
     const { handleDeleteBoard, handleEditTask, singleCard } = useAppContext();
 
     return (
-        <section className='w-full h-full grid place-items-center'>
+        <section className='w-full h-full grid place-items-center px-2 sm:px-0'>
 
             <div className='max-w-[30rem] w-full rounded-md p-8 bg-white dark:bg-L20212c'>
 
@@ -44,7 +44,7 @@ export function Todo() {
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <EllipsisVertical className='cursor-pointer text-L828fa3 size-11' />
+                            <EllipsisVertical className='cursor-pointer text-L828fa3 size-6' />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-52 p-2">
 
