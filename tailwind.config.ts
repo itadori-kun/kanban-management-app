@@ -9,6 +9,9 @@ const config: Config = {
   ],
 	theme: {
     	extend: {
+			width: {
+				calc: 'calc(100vw - 16rem)',
+			},
 			screens: {
 				sm: '700px',
 			},

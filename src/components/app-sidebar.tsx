@@ -1,7 +1,7 @@
 "use client";
 
 // Import the necessary components from the `react` and `next-themes` packages.
-// import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { BoardIcon } from "@/components/icons/boardIcon"
 import { Toggle } from "@/components/toggle"
@@ -26,30 +26,56 @@ import {
 const items = [
     {
         title: "platform launch",
-        url: "#",
+        url: "platform_launch",
         icon: BoardIcon,
     },
     {
         title: "marketing plan",
-        url: "#",
+        url: "marketing_plan",
         icon: BoardIcon,
     },
     {
         title: "roadmap",
-        url: "#",
+        url: "roadmap",
         icon: BoardIcon,
     }
 ]
 
 export function AppSidebar(): JSX.Element {
+    const [ sidebarIcon, setSidebarIcon ] = useState<boolean>( true );
+    // const [ display, setDisplay ] = useState<string>( 'block' );
 
-    const { sidebarIcon, display, handleAddBoard } = useAppContext();
+    useEffect( () => {
+        const sidebarItems = document.querySelector( '.group' ) as HTMLElement;
+
+        const updateWidth = () => {
+            if ( sidebarItems.dataset.state === 'expanded' ) {
+                setSidebarIcon( sidebarIcon );
+                // setDisplay( 'block' );
+            } else {
+                setSidebarIcon( !sidebarIcon );
+                // setDisplay( 'hidden' );
+            }
+
+
+        };
+
+
+        updateWidth(); // Initial check
+
+        const observer = new MutationObserver( updateWidth );
+        observer.observe( sidebarItems, { attributes: true, attributeFilter: [ 'data-state' ] } );
+
+        return () => observer.disconnect(); // Cleanup on unmount
+    }, [] );
+
+    const { handleAddBoard } = useAppContext();
 
     const { theme, systemTheme } = useTheme();
     return (
         <div className="flex h-dvh flex-col relative top-0 left-3 font-plusJakarta">
-            <div className={ `${ display }` }>
-                <Sidebar className="absolute left-0 top-0 h-full">
+            <div  >
+                <Sidebar className=" absolute left-0 top-0 h-full ">
                     <SidebarContent >
                         <SidebarGroup className="pl-0 h-dvh">
 
@@ -118,7 +144,8 @@ export function AppSidebar(): JSX.Element {
                             <SidebarTrigger />
                         </div>
                     </div>
-                ) }
+                )
+            }
 
 
         </div>

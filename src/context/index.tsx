@@ -14,7 +14,20 @@ interface CardProps {
     title: string;
     description: string;
     subtasks: { value: string }[];
-    status: string;
+    column_id: string;
+}
+
+interface Column {
+    id: string;
+    name: string;
+    project_id: string;
+}
+interface Task {
+    id: string;
+    title: string;
+    description: string;
+    subtasks: { value: string }[];
+    column_id: string;
 }
 
 interface AppContextProps {
@@ -23,15 +36,17 @@ interface AppContextProps {
     placeHolder: JSX.Element;
     setPlaceHolder: React.Dispatch<React.SetStateAction<JSX.Element>>;
     cards: CardProps[];
-    cardId: string,
-    width: string,
-    navLogoDisplay: boolean,
-    sidebarIcon: boolean,
-    display: string,
-    setCardId: React.Dispatch<React.SetStateAction<string>>,
-    singleCard: CardProps,
+    cardId: string;
+    width: string;
+    setCardId: React.Dispatch<React.SetStateAction<string>>;
+    setStatus: React.Dispatch<React.SetStateAction<string>>;
+    status: string;
+    singleCard: CardProps;
+    projects: [];
+    columns: Column[];
+    tasks: Task[];
+    fetchAllData: () => void;
     cardComponentId: ( taskId: string ) => void;
-    cardComponent: () => void;
     handleOverlayOpen: () => void;
     handleAddTask: () => void;
     handleAddBoard: () => void;
@@ -49,19 +64,21 @@ const AppContext = createContext<AppContextProps>( {
     cards: [],
     cardId: "",
     width: "",
-    navLogoDisplay: false,
-    sidebarIcon: true,
-    display: "block",
     singleCard: {
         id: "",
         title: "",
         description: "",
         subtasks: [],
-        status: ""
+        column_id: ""
     },
+    status: '',
+    setStatus: () => { },
+    projects: [],
+    columns: [],
+    tasks: [],
     setCardId: () => { },
     cardComponentId: () => { },
-    cardComponent: () => { },
+    fetchAllData: () => { },
     handleOverlayOpen: () => { },
     handleAddTask: () => { },
     handleAddBoard: () => { },
@@ -77,17 +94,19 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
         title: "",
         description: "",
         subtasks: [],
-        status: ""
+        column_id: ""
     } )
 
     const [ overlay, setOverlay ] = useState<boolean>( false );
     const [ placeHolder, setPlaceHolder ] = useState<JSX.Element>( <></> );
     const [ cards, setCards ] = useState<CardProps[]>( [] );
     const [ cardId, setCardId ] = useState( "" )
-    const [ width, setWidth ] = useState<string>( 'w-[calc(100vw-16rem)]' );
-    const [ navLogoDisplay, setNavLogoDisplay ] = useState<boolean>( false );
-    const [ sidebarIcon, setSidebarIcon ] = useState<boolean>( true );
-    const [ display, setDisplay ] = useState<string>( 'block' );
+    const [ width, setWidth ] = useState<string>( 'w-calc' );
+    const [ projects, setProjects ] = useState<[]>( [] );
+    const [ columns, setColumns ] = useState<Column[]>( [] );
+    const [ tasks, setTasks ] = useState<Task[]>( [] );
+    const [ status, setStatus ] = useState<string>( '' )
+
 
 
     const handleOverlayOpen = (): void => {
@@ -129,23 +148,23 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
         setOverlay( false )
     }
 
-    const cardComponent = async () => {
+    const fetchAllData = async () => {
         try {
-            const url = await fetch( `http://localhost:4000/todo` );
-            if ( !url.ok ) {
-                throw new Error( `HTTP error! status: ${ url.status }` );
-            }
-            const response = await url.json();
-            if ( !Array.isArray( response ) || !response.length ) {
-                throw new Error( 'Failed to fetch data' );
-            }
-            setCards( response );
+            const [ projectsRes, columnsRes, taskRes ] = await Promise.all( [ fetch( `http://localhost:4000/projects` ), fetch( `http://localhost:4000/columns` ), fetch( `http://localhost:4000/tasks` ) ] );
+            const [ projects, columns, task ] = await Promise.all( [ projectsRes.json(), columnsRes.json(), taskRes.json() ] );
+            // return { projects, columns, task }
+            setProjects( projects );
+            setColumns( columns );
+            setTasks( task );
+
+
+            // setCards( response );
         } catch ( error ) {
             console.error( 'Error fetching data:', error );
         }
     }
     const cardComponentId = async ( taskId: string ) => {
-        const urlGet = await fetch( `http://localhost:4000/todo/${ taskId }` )
+        const urlGet = await fetch( `http://localhost:4000/tasks/${ taskId }` )
         const response = await urlGet.json()
         if ( !response || Object.keys( response ).length === 0 ) {
             throw new Error( 'Failed to fetch data' )
@@ -154,24 +173,20 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
     }
 
     useEffect( () => {
-
         const sidebarItems = document.querySelector( '.group' ) as HTMLElement;
 
         const updateWidth = () => {
             if ( sidebarItems.dataset.state === 'expanded' ) {
-                setWidth( 'sm:w-[calc(100vw-16rem)]' );
-                setNavLogoDisplay( navLogoDisplay )
-                setSidebarIcon( sidebarIcon );
-                setDisplay( 'block' );
+                setWidth( 'w-calc' );
+                // setNavLogoDisplay( navLogoDisplay );
             } else {
-                setWidth( 'sm:w-dvw' );
-                setNavLogoDisplay( !navLogoDisplay )
-                setSidebarIcon( !sidebarIcon );
-                setDisplay( 'hidden' );
+                setWidth( 'w-screen' );
+                // setNavLogoDisplay( !navLogoDisplay );
             }
 
 
         };
+
 
         updateWidth(); // Initial check
 
@@ -182,6 +197,8 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
     }, [ width ] );
 
 
+
+
     return (
         <AppContext.Provider value={ {
             setOverlay,
@@ -189,21 +206,22 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
             setPlaceHolder,
             placeHolder,
             cards,
-            cardComponent,
+            fetchAllData,
             cardId,
             width,
-            navLogoDisplay,
-            sidebarIcon,
-            display,
             setCardId,
             singleCard,
+            projects,
+            columns,
+            tasks,
+            status,
+            setStatus,
             cardComponentId,
             handleOverlayOpen,
             handleAddTask,
             handleAddBoard,
             handleEditBoard,
             handleDeleteBoard,
-
             handleEditTask,
             handleCloseOverlay,
         } }>

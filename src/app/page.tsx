@@ -13,12 +13,12 @@ import { useEffect, useRef } from 'react';
 
 export default function Home() {
 
-  const { overlay, placeHolder, cards, width, cardComponent } = useAppContext();
+  const { overlay, placeHolder, columns, width, fetchAllData } = useAppContext();
   const mounted = useRef( false );
 
   useEffect( () => {
     mounted.current = true;
-    cardComponent();
+    fetchAllData();
     return () => {
       mounted.current = false;
     };
@@ -26,23 +26,19 @@ export default function Home() {
 
 
   return (
-    <div className='w-svw sm:w-fit' id='container'>
+    <div className={ width } id='container'>
 
       {/* Header section */ }
       <Header />
 
 
       {/* Empty state with no column or task added to dashboard */ }
-      <section className={ `${ width } bg-Lf4f7fd p-6 dark:bg-black h-[calc(100vh-110px)] overflow-hidden` }>
+      <section className={ `w-full bg-Lf4f7fd p-6 dark:bg-black h-[calc(100vh-110px)] overflow-hidden` }>
 
-        <div className="w-full overflow-x-auto h-full">
-          { cards.length ? (
-            <article className=' flex gap-6 items-start h-full overflow-x-auto'>
+        <div className="overflow-hidden h-full">
+          { columns.length ? (
+            <article className=' flex gap-6 items-start h-full overflow-x-scroll'>
 
-              <Card />
-              <Card />
-              <Card />
-              <Card />
               <Card />
 
               <section className='w-[280px]'>

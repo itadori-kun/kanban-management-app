@@ -41,7 +41,7 @@ const taskFormSchema = z.object( {
                 value: z.string().min( 1, { message: "Can't be empty" } ),
             } )
         ),
-    status: z.string(),
+    column_id: z.string(),
 } )
 
 type TaskFormValues = z.infer<typeof taskFormSchema>
@@ -50,7 +50,7 @@ type TaskFormValues = z.infer<typeof taskFormSchema>
 
 export function EditTaskForm() {
     const { reset } = useForm()
-    const { handleCloseOverlay, singleCard } = useAppContext()
+    const { handleCloseOverlay, singleCard, status, columns } = useAppContext()
 
     const form = useForm<TaskFormValues>( {
         resolver: zodResolver( taskFormSchema ),
@@ -68,7 +68,7 @@ export function EditTaskForm() {
 
         const dataFile = JSON.stringify( data, null, 2 )
 
-        const resp = await fetch( `http://localhost:4000/todo/${ singleCard.id }`, {
+        const resp = await fetch( `http://localhost:4000/tasks/${ singleCard.id }`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -161,7 +161,7 @@ export function EditTaskForm() {
 
                         <FormField
                             control={ form.control }
-                            name="status"
+                            name="column_id"
                             render={ ( { field } ) => (
                                 <FormItem>
 
@@ -169,13 +169,14 @@ export function EditTaskForm() {
                                     <Select aria-labelledby="current status" onValueChange={ field.onChange } defaultValue={ field.value }>
                                         <FormControl>
                                             <SelectTrigger className="w-full px-4 py-3 h-fit text-L828fa3 text-sm font-medium text-black border-L828fa3/25 dark:text-white">
-                                                <SelectValue placeholder="Todo" />
+                                                <SelectValue placeholder={ status } />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="todo">Todo</SelectItem>
-                                            <SelectItem value="doing">Doing</SelectItem>
-                                            <SelectItem value="done">Done</SelectItem>
+                                            { columns.map( column => (
+                                                <SelectItem key={ column.id } value={ column.id }>{ column.name }</SelectItem>
+
+                                            ) ) }
                                         </SelectContent>
                                     </Select>
                                     {/* <FormMessage /> */ }

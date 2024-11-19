@@ -1,6 +1,7 @@
 
 import { useTheme } from "next-themes";
 import { useAppContext } from "@/context";
+import { useEffect, useState } from "react";
 
 import { DarkLogo } from "@/components/icons/darkLogo";
 import { LightLogo } from "@/components/icons/lightLogo";
@@ -18,10 +19,34 @@ import {
 export function Header() {
 
     const { theme, systemTheme } = useTheme();
-    const { width, cards, navLogoDisplay, handleAddTask, handleEditBoard, handleDeleteBoard } = useAppContext();
+    const { width, columns, handleAddTask, handleEditBoard, handleDeleteBoard } = useAppContext();
+    const [ navLogoDisplay, setNavLogoDisplay ] = useState<boolean>( false );
+
+    useEffect( () => {
+        const sidebarItems = document.querySelector( '.group' ) as HTMLElement;
+
+        const updateWidth = () => {
+            if ( sidebarItems.dataset.state === 'expanded' ) {
+                setNavLogoDisplay( navLogoDisplay );
+            } else {
+                setNavLogoDisplay( !navLogoDisplay );
+            }
+
+
+        };
+
+
+        updateWidth(); // Initial check
+
+        const observer = new MutationObserver( updateWidth );
+        observer.observe( sidebarItems, { attributes: true, attributeFilter: [ 'data-state' ] } );
+
+        return () => observer.disconnect(); // Cleanup on unmount
+    }, [] );
+
 
     return (
-        <header className={ ` w-screen ${ width } px-6 flex items-center justify-between dark:bg-L2b2c37 bg-white h-24` }>
+        <header className={ `px-6 flex items-center justify-between dark:bg-L2b2c37 bg-white h-24` }>
 
             <div className='flex items-center h-full '>
                 {/* check to see if the sidebar is expanded so as to display the logo */ }
@@ -44,7 +69,7 @@ export function Header() {
             <div className="flex items-center w-fit sm:w-[440px] gap-2 justify-end">
 
                 {/* button is disabled since no column exist yet, no task can be added yet*/ }
-                { cards.length ? (
+                { columns.length ? (
                     <button className="w-12 sm:w-fit text-transform: capitalize rounded-full bg-L635fc7 px-3 sm:px-6 sm:py-4 text-2xl sm:text-base font-bold text-white text-center" aria-disabled onClick={ handleAddTask }>
                         + <span className='hidden sm:inline'> add new task</span>
                     </button>

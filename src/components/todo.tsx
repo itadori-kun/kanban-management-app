@@ -8,9 +8,9 @@ import { EllipsisVertical } from "lucide-react"
 
 import {
     Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
+    // SelectContent,
+    // SelectGroup,
+    // SelectItem,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
@@ -26,7 +26,7 @@ import {
 
 export function Todo() {
 
-    const { handleDeleteBoard, handleEditTask, singleCard } = useAppContext();
+    const { handleDeleteBoard, handleEditTask, singleCard, status } = useAppContext();
 
     return (
         <section className='w-full h-full grid place-items-center px-2 sm:px-0'>
@@ -96,15 +96,15 @@ export function Todo() {
 
                             <Select aria-labelledby="current status">
                                 <SelectTrigger className="w-full text-L828fa3 text-sm text-black border-L828fa3/25 dark:text-white text-transform: capitalize">
-                                    <SelectValue placeholder={ singleCard.status } />
+                                    <SelectValue placeholder={ status } />
                                 </SelectTrigger>
-                                <SelectContent>
+                                {/* <SelectContent>
                                     <SelectGroup>
                                         <SelectItem value="todo">Todo</SelectItem>
                                         <SelectItem value="doing">Doing</SelectItem>
                                         <SelectItem value="done">Done</SelectItem>
                                     </SelectGroup>
-                                </SelectContent>
+                                </SelectContent> */}
                             </Select>
 
                         </div>

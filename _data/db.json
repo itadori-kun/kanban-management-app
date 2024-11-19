@@ -1,5 +1,13 @@
 {
-  "todo": [
+  "projects": [
+    {
+      "id": "1",
+      "title": "platform launch",
+      "url": "platform_launch",
+      "icon": "BoardIcon"
+    }
+  ],
+  "tasks": [
     {
       "title": "hey new change",
       "description": "hey wassup",
@@ -11,8 +19,8 @@
           "value": "new field array"
         }
       ],
-      "status": "todo",
-      "id": "1"
+      "id": "1",
+      "column_id": "1"
     },
     {
       "title": "hey ur",
@@ -25,7 +33,7 @@
           "value": "yo new task"
         }
       ],
-      "status": "todo",
+      "column_id": "3",
       "id": "2"
     },
     {
@@ -39,11 +47,11 @@
           "value": "hey it does not work"
         }
       ],
-      "status": "doing",
-      "id": "3"
+      "id": "3",
+      "column_id": "3"
     },
     {
-      "id": "7",
+      "id": "4",
       "title": "after",
       "description": "aftr",
       "subtasks": [
@@ -51,10 +59,10 @@
           "value": "hey"
         }
       ],
-      "status": "todo"
+      "column_id": "1"
     },
     {
-      "id": "10",
+      "id": "5",
       "title": "Are you working",
       "description": "Just checking to see ",
       "subtasks": [
@@ -62,45 +70,49 @@
           "value": "new task"
         }
       ],
-      "status": "todo"
-    }
-  ],
-  "doing": [
+      "column_id": "2"
+    },
     {
-      "id": "2a80",
-      "title": "hey",
-      "description": "hey",
+      "id": "6",
+      "title": "Are you Paying the tickets",
+      "description": "Just checking to see ",
       "subtasks": [
         {
-          "value": "hey"
-        },
-        {
-          "value": "what are you doing"
-        },
-        {
-          "value": ""
+          "value": "Pay Tickets"
         }
       ],
-      "status": "doing"
-    }
-  ],
-  "done": [
+      "column_id": "3"
+    },
     {
-      "id": "2a80",
-      "title": "hey",
-      "description": "hey",
+      "title": "Done Paying the tickets",
+      "description": "Just checking to see ",
       "subtasks": [
         {
-          "value": "hey"
+          "value": "Done paying Tickets"
         },
         {
-          "value": "what are you doing"
-        },
-        {
-          "value": ""
+          "value": "hey waddup"
         }
       ],
-      "status": "done"
+      "column_id": "1",
+      "id": "7"
+    }
+  ],
+  "columns": [
+    {
+      "id": "1",
+      "name": "Todo",
+      "project_id": "1"
+    },
+    {
+      "id": "2",
+      "name": "Doing",
+      "project_id": "1"
+    },
+    {
+      "id": "3",
+      "name": "Done",
+      "project_id": "1"
     }
   ]
 }
