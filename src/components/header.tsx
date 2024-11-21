@@ -21,7 +21,7 @@ export function Header() {
 
     const params = useParams();
     // Remove any spacing from the params and replace with underscore but first convert to a string and then trim any whitespaces before splitting by underscore and joining with space. This will escape the tsx typeerror.
-    const transformedParams = params.slug.toString().trim().split( "_" ).join( " " )
+    const transformedParams = params.slug?.toString().trim().split( "_" ).join( " " )
 
     // Call the useTheme hook to get the theme and systemTheme
     const { theme, systemTheme } = useTheme();
