@@ -7,6 +7,7 @@ import { EditBoard } from "@/components/editNewBoard";
 import { DeleteSection } from "@/components/deleteSection";
 import { Todo } from "@/components/todo";
 import { EditTaskForm } from "@/components/editTaskForm";
+import { AddNewColumn } from "@/components/addNewColumn";
 
 
 interface CardProps {
@@ -17,6 +18,12 @@ interface CardProps {
     column_id: string;
 }
 
+interface Projects {
+    id: string;
+    title: string;
+    url: string;
+    icon: string;
+}
 interface Column {
     id: string;
     name: string;
@@ -35,14 +42,13 @@ interface AppContextProps {
     setOverlay: React.Dispatch<React.SetStateAction<boolean>>;
     placeHolder: JSX.Element;
     setPlaceHolder: React.Dispatch<React.SetStateAction<JSX.Element>>;
-    cards: CardProps[];
     cardId: string;
     width: string;
     setCardId: React.Dispatch<React.SetStateAction<string>>;
     setStatus: React.Dispatch<React.SetStateAction<string>>;
     status: string;
     singleCard: CardProps;
-    projects: [];
+    projects: Projects[];
     columns: Column[];
     tasks: Task[];
     fetchAllData: () => void;
@@ -54,6 +60,7 @@ interface AppContextProps {
     handleDeleteBoard: ( header: string, text: string, type: string, id: string ) => void;
     handleEditTask: () => void;
     handleCloseOverlay: () => void;
+    handleCreateColumnsOverlay: () => void;
 }
 
 const AppContext = createContext<AppContextProps>( {
@@ -61,7 +68,6 @@ const AppContext = createContext<AppContextProps>( {
     setOverlay: () => { },
     placeHolder: <></>,
     setPlaceHolder: () => { },
-    cards: [],
     cardId: "",
     width: "",
     singleCard: {
@@ -86,6 +92,7 @@ const AppContext = createContext<AppContextProps>( {
     handleDeleteBoard: () => { },
     handleEditTask: () => { },
     handleCloseOverlay: () => { },
+    handleCreateColumnsOverlay: () => { },
 } );
 
 export function AppWrapper( { children }: { children: React.ReactNode } ) {
@@ -99,13 +106,12 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
 
     const [ overlay, setOverlay ] = useState<boolean>( false );
     const [ placeHolder, setPlaceHolder ] = useState<JSX.Element>( <></> );
-    const [ cards, setCards ] = useState<CardProps[]>( [] );
     const [ cardId, setCardId ] = useState( "" )
     const [ width, setWidth ] = useState<string>( 'w-calc' );
-    const [ projects, setProjects ] = useState<[]>( [] );
+    const [ projects, setProjects ] = useState<Projects[]>( [] );
     const [ columns, setColumns ] = useState<Column[]>( [] );
     const [ tasks, setTasks ] = useState<Task[]>( [] );
-    const [ status, setStatus ] = useState<string>( '' )
+    const [ status, setStatus ] = useState<string>( "Todo" )
 
 
 
@@ -147,6 +153,11 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
     const handleCloseOverlay = (): void => {
         setOverlay( false )
     }
+
+    const handleCreateColumnsOverlay = async () => {
+        setPlaceHolder( <AddNewColumn /> );
+        setOverlay( !overlay )
+    };
 
     const fetchAllData = async () => {
         try {
@@ -205,7 +216,6 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
             overlay,
             setPlaceHolder,
             placeHolder,
-            cards,
             fetchAllData,
             cardId,
             width,
@@ -224,6 +234,7 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
             handleDeleteBoard,
             handleEditTask,
             handleCloseOverlay,
+            handleCreateColumnsOverlay
         } }>
             { children }
         </AppContext.Provider>

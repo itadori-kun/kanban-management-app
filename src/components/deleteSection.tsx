@@ -15,12 +15,22 @@ export function DeleteSection( props: Props ) {
 
     // This delete from the json server
     const handleDelete = async () => {
-        await fetch( `http://localhost:4000/todo/${ props.id }`, {
-            method: "DELETE",
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        } )
+
+        if ( props.header === 'board' ) {
+            await fetch( `http://localhost:4000/projects/${ props.id }`, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            } );
+        } else {
+            await fetch( `http://localhost:4000/tasks/${ props.id }`, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            } );
+        }
 
         handleCloseOverlay()
 

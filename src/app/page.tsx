@@ -13,7 +13,7 @@ import { useEffect, useRef } from 'react';
 
 export default function Home() {
 
-  const { overlay, placeHolder, columns, width, fetchAllData } = useAppContext();
+  const { overlay, placeHolder, columns, width, fetchAllData, handleCreateColumnsOverlay } = useAppContext();
   const mounted = useRef( false );
 
   useEffect( () => {
@@ -35,15 +35,15 @@ export default function Home() {
       {/* Empty state with no column or task added to dashboard */ }
       <section className={ `w-full bg-Lf4f7fd p-6 dark:bg-black h-[calc(100vh-110px)] overflow-hidden` }>
 
-        <div className="overflow-hidden h-full">
+        <div className="overflow-hidden">
           { columns.length ? (
-            <article className=' flex gap-6 items-start h-full overflow-x-scroll'>
+            <article className=' flex gap-6 items-start h-screen overflow-x-scroll'>
 
               <Card />
 
-              <section className='w-[280px]'>
-                <div className='w-[280px] grid place-items-center bg-L828fa3/20 h-screen rounded-md mt-10'>
-                  <button className='h-inherit text-transform: capitalize text-2xl font-bold text-L828fa3 text-pretty cursor-pointer hover:text-L635fc7 dark:hover:text-L635fc7'>
+              <section className='w-[280px] h-full'>
+                <div className='w-[280px] grid place-items-center bg-L828fa3/20 h-full rounded-md mt-10'>
+                  <button className='h-inherit text-transform: capitalize text-2xl font-bold text-L828fa3 text-pretty cursor-pointer hover:text-L635fc7 dark:hover:text-L635fc7' onClick={ handleCreateColumnsOverlay }>
                     + New Column
                   </button>
                 </div>

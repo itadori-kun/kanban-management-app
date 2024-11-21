@@ -1,4 +1,4 @@
-
+'use client';
 import { useTheme } from "next-themes";
 import { useAppContext } from "@/context";
 import { useEffect, useState } from "react";
@@ -15,11 +15,21 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useParams } from "next/navigation";
 
 export function Header() {
 
+    const params = useParams();
+    // Remove any spacing from the params and replace with underscore but first convert to a string and then trim any whitespaces before splitting by underscore and joining with space. This will escape the tsx typeerror.
+    const transformedParams = params.slug.toString().trim().split( "_" ).join( " " )
+
+    // Call the useTheme hook to get the theme and systemTheme
     const { theme, systemTheme } = useTheme();
-    const { width, columns, handleAddTask, handleEditBoard, handleDeleteBoard } = useAppContext();
+
+    // Destructure the columns, handleAddTask, handleEditBoard, and handleDeleteBoard from the useAppContext hook
+    const { columns, handleAddTask, handleEditBoard, handleDeleteBoard } = useAppContext();
+
+    // Set the navLogoDisplay to false
     const [ navLogoDisplay, setNavLogoDisplay ] = useState<boolean>( false );
 
     useEffect( () => {
@@ -31,7 +41,6 @@ export function Header() {
             } else {
                 setNavLogoDisplay( !navLogoDisplay );
             }
-
 
         };
 
@@ -59,7 +68,9 @@ export function Header() {
 
                     </div> ) : ( <></> ) }
                 <div className='flex gap-2 items-center'>
-                    <h1 className="text-transform: capitalize text-black dark:text-white font-bold text-lg sm:text-xl md:text-2xl ">Platform launch </h1>
+                    <h1 className="text-transform: capitalize text-black dark:text-white font-bold text-lg sm:text-xl md:text-2xl ">
+                        { transformedParams }
+                    </h1>
                     <span className='inline-block sm:hidden items-center text-L635fc7'><ChevronDown className='size-4 ' />
                     </span>
                 </div>

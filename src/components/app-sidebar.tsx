@@ -22,25 +22,6 @@ import {
     SidebarTrigger2
 } from "@/components/ui/sidebar"
 
-// Menu items.
-const items = [
-    {
-        title: "platform launch",
-        url: "platform_launch",
-        icon: BoardIcon,
-    },
-    {
-        title: "marketing plan",
-        url: "marketing_plan",
-        icon: BoardIcon,
-    },
-    {
-        title: "roadmap",
-        url: "roadmap",
-        icon: BoardIcon,
-    }
-]
-
 export function AppSidebar(): JSX.Element {
     const [ sidebarIcon, setSidebarIcon ] = useState<boolean>( true );
     // const [ display, setDisplay ] = useState<string>( 'block' );
@@ -56,8 +37,6 @@ export function AppSidebar(): JSX.Element {
                 setSidebarIcon( !sidebarIcon );
                 // setDisplay( 'hidden' );
             }
-
-
         };
 
 
@@ -69,7 +48,7 @@ export function AppSidebar(): JSX.Element {
         return () => observer.disconnect(); // Cleanup on unmount
     }, [] );
 
-    const { handleAddBoard } = useAppContext();
+    const { handleAddBoard, projects } = useAppContext();
 
     const { theme, systemTheme } = useTheme();
     return (
@@ -93,11 +72,12 @@ export function AppSidebar(): JSX.Element {
                                     <SidebarMenu className="text-transform: capitalize gap-0">
 
                                         {/* populate existing board from storage or database*/ }
-                                        { items.map( ( item ) => (
+                                        { projects.map( ( item ) => (
                                             <SidebarMenuItem key={ item.title } className="py-2 pl-6 mr-6 rounded-r-full text-L828fa3  active:text-white dark:hover:bg-white hover:bg-L635fc7/10 hover:text-L635fc7 active:bg-L635fc7">
                                                 <SidebarMenuButton asChild className="pl-1 text-base font-bold bg-transparent hover:bg-transparent hover:text-inherit active:text-inherit active:bg-transparent ">
                                                     <a href={ item.url }>
-                                                        <item.icon />
+                                                        {/* <item.icon /> */ }
+                                                        <BoardIcon />
                                                         <span>{ item.title }</span>
                                                     </a>
                                                 </SidebarMenuButton>

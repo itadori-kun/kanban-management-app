@@ -41,7 +41,7 @@ const taskFormSchema = z.object( {
                 value: z.string().min( 1, { message: "Can't be empty" } ),
             } )
         ),
-    status: z.string(),
+    column_id: z.string(),
 } )
 
 type TaskFormValues = z.infer<typeof taskFormSchema>
@@ -53,14 +53,14 @@ const defaultValues: Partial<TaskFormValues> = {
     subtasks: [
         { value: "" },
     ],
-    status: "todo",
+    column_id: ""
 }
 
 
 
 export function TaskForm() {
     const { reset } = useForm()
-    const { handleCloseOverlay, cards } = useAppContext()
+    const { handleCloseOverlay, tasks, status, columns } = useAppContext()
 
     const form = useForm<TaskFormValues>( {
         resolver: zodResolver( taskFormSchema ),
@@ -75,8 +75,8 @@ export function TaskForm() {
 
     async function onSubmit( data: TaskFormValues ) {
 
-        // Determine the new unique `id` based on the highest existing id but we are using cards since in the context we have cards which carries the entire database data
-        const latestId = cards.reduce( ( maxId: number, card: { id: string } ) => Math.max( maxId, parseInt( card?.id ) ), 1 );
+        // Determine the new unique `id` based on the highest existing id but we are using tasks since in the context we have tasks which carries the entire database data
+        const latestId = tasks.reduce( ( maxId: number, task: { id: string } ) => Math.max( maxId, parseInt( task?.id ) ), 1 );
         const newId = latestId + 1;
 
         // Add the new `id` to the data
@@ -85,7 +85,7 @@ export function TaskForm() {
         const dataFile = JSON.stringify( newData, null, 2 )
 
         // send the data to the server using a Post request
-        const resp = await fetch( `http://localhost:4000/todo`, {
+        const resp = await fetch( `http://localhost:4000/tasks`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -178,7 +178,7 @@ export function TaskForm() {
 
                         <FormField
                             control={ form.control }
-                            name="status"
+                            name="column_id"
                             render={ ( { field } ) => (
                                 <FormItem>
 
@@ -186,13 +186,14 @@ export function TaskForm() {
                                     <Select aria-labelledby="current status" onValueChange={ field.onChange } defaultValue={ field.value }>
                                         <FormControl>
                                             <SelectTrigger className="w-full px-4 py-3 h-fit text-L828fa3 text-sm font-medium text-black border-L828fa3/25 dark:text-white">
-                                                <SelectValue placeholder="Todo" />
+                                                <SelectValue placeholder={ status } />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="todo">Todo</SelectItem>
-                                            <SelectItem value="doing">Doing</SelectItem>
-                                            <SelectItem value="done">Done</SelectItem>
+                                            { columns.map( column => (
+                                                <SelectItem key={ column.id } value={ column.id }>{ column.name }</SelectItem>
+
+                                            ) ) }
                                         </SelectContent>
                                     </Select>
                                     {/* <FormMessage /> */ }
