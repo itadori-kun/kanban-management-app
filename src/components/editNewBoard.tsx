@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { X } from "lucide-react"
+import { useAppContext } from "@/context"
 
 import {
     Form,
@@ -22,19 +23,17 @@ import {
 const editBoardSchema = z.object( {
     title: z
         .string()
-        .min( 2, {
-            message: "Username must be at least 2 characters.",
-        } )
-        .max( 30, {
-            message: "Username must not be longer than 30 characters.",
+        .min( 1, {
+            message: "Cannot be Empty",
+        } ).max( 20, {
+            message: "Must be less than 20 characters",
         } ),
     columns: z
         .array(
             z.object( {
-                value: z.string(),
+                value: z.string().min( 1, { message: "Cannot be Empty" } )
             } )
         )
-        .optional(),
 } )
 
 type editBoardValues = z.infer<typeof editBoardSchema>
@@ -55,6 +54,8 @@ type editBoardProps = {
 };
 
 export function EditBoard( props: editBoardProps ) {
+    const { reset } = useForm()
+    const { handleCloseOverlay, boardId } = useAppContext()
 
     const form = useForm<editBoardValues>( {
         resolver: zodResolver( editBoardSchema ),
@@ -67,16 +68,39 @@ export function EditBoard( props: editBoardProps ) {
         control: form.control,
     } )
 
-    function onSubmit( data: editBoardValues ) {
+    async function onSubmit( data: editBoardValues ) {
         console.log( JSON.stringify( data, null, 2 ), 'data' )
+
+        // const resp = await fetch( `http://localhost:4000/projects/${ boardId }`, {
+        //     method: 'PUT',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: dataFile
+        // } );
+        // // check if the response is ok
+        // if ( !resp.ok ) {
+        //     throw new Error( `Response status: ${ resp.status }` )
+        // }
+        // // reset the form and close the overlay
+        // reset()
+        // handleCloseOverlay()
+
     }
+
 
     return (
         <section className="w-full h-full grid place-items-center px-2 sm:px-0">
 
             <div className='max-w-[30rem] w-full rounded-md p-8 bg-white dark:bg-L20212c'>
 
-                <h2 className="text-transform: capitalize text-black dark:text-white font-bold text-lg mb-6">{ props.header }</h2>
+                <div className="flex justify-between">
+                    <h2 className="text-transform: capitalize text-black dark:text-white font-bold text-lg mb-6">{ props.header }</h2>
+                    <X className="size-6 text-L828fa3 dark:text-Lea5555 transform hover:scale-150" onClick={ () => {
+                        handleCloseOverlay()
+                        reset()
+                    } } />
+                </div>
 
                 <Form { ...form }>
                     <form onSubmit={ form.handleSubmit( onSubmit ) } className="space-y-8 w-full">
@@ -108,7 +132,7 @@ export function EditBoard( props: editBoardProps ) {
                                                 <FormControl className="px-4 py-3 h-fit text-sm font-medium">
                                                     <Input { ...field } />
                                                 </FormControl>
-                                                <X className="text-L828fa3" />
+                                                <X className="text-L828fa3 transform hover:scale-110" />
                                             </div>
                                         </FormItem>
                                     ) }

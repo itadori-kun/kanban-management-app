@@ -1,13 +1,15 @@
 "use client";
 
 // Import the necessary components from the `react` and `next-themes` packages.
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useTheme } from "next-themes";
 import { BoardIcon } from "@/components/icons/boardIcon"
 import { Toggle } from "@/components/toggle"
 import { DarkLogo } from "@/components/icons/darkLogo"
 import { LightLogo } from "@/components/icons/lightLogo"
 import { useAppContext } from "@/context";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import {
     Sidebar,
@@ -23,8 +25,12 @@ import {
 } from "@/components/ui/sidebar"
 
 export function AppSidebar(): JSX.Element {
+    const mounted = useRef( false );
+    const { theme, systemTheme } = useTheme();
     const [ sidebarIcon, setSidebarIcon ] = useState<boolean>( true );
-    // const [ display, setDisplay ] = useState<string>( 'block' );
+    const { handleAddBoard, projects, fetchAllBoardData, setBoardId } = useAppContext();
+
+    const pathname = usePathname();
 
     useEffect( () => {
         const sidebarItems = document.querySelector( '.group' ) as HTMLElement;
@@ -47,10 +53,18 @@ export function AppSidebar(): JSX.Element {
 
         return () => observer.disconnect(); // Cleanup on unmount
     }, [] );
+    useEffect( () => {
+        mounted.current = true;
+        fetchAllBoardData();
+        return () => {
+            mounted.current = false;
+        };
+    }, [ projects ] )
 
-    const { handleAddBoard, projects } = useAppContext();
 
-    const { theme, systemTheme } = useTheme();
+
+
+
     return (
         <div className="flex h-dvh flex-col relative top-0 left-3 font-plusJakarta">
             <div  >
@@ -65,33 +79,35 @@ export function AppSidebar(): JSX.Element {
 
                             {/* side bar navigation area where new boards are created*/ }
                             <SidebarGroupLabel className="text-transform: uppercase ml-7 pl-0 text-xs font-bold pb-5 text-L828fa3 tracking-widest">
-                                All Boards ( 3 )
+                                All Boards ( { projects.length } )
                             </SidebarGroupLabel>
                             <div className="h-full flex flex-col justify-between ">
                                 <SidebarGroupContent >
                                     <SidebarMenu className="text-transform: capitalize gap-0">
 
                                         {/* populate existing board from storage or database*/ }
-                                        { projects.map( ( item ) => (
-                                            <SidebarMenuItem key={ item.title } className="py-2 pl-6 mr-6 rounded-r-full text-L828fa3  active:text-white dark:hover:bg-white hover:bg-L635fc7/10 hover:text-L635fc7 active:bg-L635fc7">
-                                                <SidebarMenuButton asChild className="pl-1 text-base font-bold bg-transparent hover:bg-transparent hover:text-inherit active:text-inherit active:bg-transparent ">
-                                                    <a href={ item.url }>
-                                                        {/* <item.icon /> */ }
-                                                        <BoardIcon />
-                                                        <span>{ item.title }</span>
-                                                    </a>
-                                                </SidebarMenuButton>
-
-                                            </SidebarMenuItem>
-                                        ) ) }
+                                        { projects.map( ( item ) => {
+                                            const isActive = pathname === `/${ item.url }`
+                                            return (
+                                                <SidebarMenuItem key={ item.title } className={ isActive ? "py-2 pl-6 mr-6 rounded-r-full text-white dark:hover:bg-white hover:bg-L635fc7/10 hover:text-L635fc7 bg-L635fc7" : "py-2 pl-6 mr-6 rounded-r-full text-L828fa3  dark:hover:bg-white hover:bg-L635fc7/10 hover:text-L635fc7" }>
+                                                    <SidebarMenuButton asChild className="pl-1 text-base font-bold bg-transparent hover:bg-transparent hover:text-inherit active:text-inherit active:bg-transparent ">
+                                                        <Link href={ item.url } onClick={ () => { setBoardId( item.id ) } }>
+                                                            {/* <item.icon /> */ }
+                                                            <BoardIcon />
+                                                            <span>{ item.title }</span>
+                                                        </Link>
+                                                    </SidebarMenuButton>
+                                                </SidebarMenuItem>
+                                            );
+                                        } ) }
 
                                         {/* Create new board */ }
-                                        <SidebarMenuItem className="py-2 pl-6 mr-6 rounded-r-full text-L635fc7 active:text-white hover:bg-white dark:hover:bg-white hover:bg-L635fc7/10 hover:text-L635fc7 active:bg-L635fc7 cursor-pointer" onClick={ handleAddBoard }>
+                                        <SidebarMenuItem className="py-2 pl-6 mr-6 rounded-r-full text-L635fc7  hover:bg-white dark:hover:bg-white hover:bg-L635fc7/10 hover:text-L635fc7  cursor-pointer" onClick={ handleAddBoard }>
                                             <SidebarMenuButton asChild className="pl-1 text-base font-bold bg-transparent hover:bg-transparent active:bg-transparent hover:text-inherit active:text-inherit">
-                                                <a >
+                                                <p >
                                                     <BoardIcon />
                                                     <span>+ Create New Board</span>
-                                                </a>
+                                                </p>
                                             </SidebarMenuButton>
                                         </SidebarMenuItem>
 

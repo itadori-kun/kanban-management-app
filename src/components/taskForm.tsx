@@ -42,6 +42,7 @@ const taskFormSchema = z.object( {
             } )
         ),
     column_id: z.string(),
+    project_id: z.string(),
 } )
 
 type TaskFormValues = z.infer<typeof taskFormSchema>
@@ -53,14 +54,15 @@ const defaultValues: Partial<TaskFormValues> = {
     subtasks: [
         { value: "" },
     ],
-    column_id: ""
+    column_id: "",
+    project_id: "",
 }
 
 
 
 export function TaskForm() {
     const { reset } = useForm()
-    const { handleCloseOverlay, tasks, status, columns } = useAppContext()
+    const { handleCloseOverlay, tasks, status, columns, boardId } = useAppContext()
 
     const form = useForm<TaskFormValues>( {
         resolver: zodResolver( taskFormSchema ),
@@ -76,11 +78,13 @@ export function TaskForm() {
     async function onSubmit( data: TaskFormValues ) {
 
         // Determine the new unique `id` based on the highest existing id but we are using tasks since in the context we have tasks which carries the entire database data
-        const latestId = tasks.reduce( ( maxId: number, task: { id: string } ) => Math.max( maxId, parseInt( task?.id ) ), 1 );
-        const newId = latestId + 1;
+        // const latestId = tasks.reduce( ( maxId: number, task: { id: string } ) => Math.max( maxId, parseInt( task?.id ) ), 1 );
+        // const newId = latestId + 1;
+        const taskIds = Object.keys( tasks ).map( Number ).filter( id => !isNaN( id ) );
+        const newId = taskIds.length > 0 ? Math.max( ...taskIds ) + 1 : 1;
 
         // Add the new `id` to the data
-        const newData = { ...data, id: newId.toString() };
+        const newData = { ...data, id: newId.toString(), project_id: boardId };
         // convert the data to a string
         const dataFile = JSON.stringify( newData, null, 2 )
 
@@ -106,8 +110,15 @@ export function TaskForm() {
         <section className="w-full h-full grid place-items-center px-2 sm:px-0">
 
             <div className='max-w-[30rem] w-full rounded-md p-8 bg-white dark:bg-L20212c'>
+                <div className="flex justify-between">
+                    <h2 className="text-transform: capitalize text-black dark:text-white font-bold text-lg mb-6">add new task</h2>
+                    <X className="size-6 text-L828fa3 dark:text-Lea5555 transform hover:scale-150" onClick={ () => {
+                        handleCloseOverlay()
+                        reset()
+                    }
+                    } />
+                </div>
 
-                <h2 className="text-transform: capitalize text-black dark:text-white font-bold text-lg mb-6">add new task</h2>
 
                 <Form { ...form }>
                     <form onSubmit={ form.handleSubmit( onSubmit ) } className="space-y-8 w-full">
@@ -158,7 +169,7 @@ export function TaskForm() {
                                                 <FormControl className="px-4 py-3 h-fit text-sm font-medium border-Lea5555 ">
                                                     <Input placeholder="e.g. Make coffee" { ...field } />
                                                 </FormControl>
-                                                <X className="text-L828fa3 dark:text-Lea5555" onClick={ () => remove( index ) } />
+                                                <X className="text-L828fa3 dark:text-Lea5555 hover:scale-110 transform" onClick={ () => remove( index ) } />
                                             </div>
                                             <FormMessage className="text-Lea5555 text-xs" />
                                         </FormItem>

@@ -42,6 +42,7 @@ const taskFormSchema = z.object( {
             } )
         ),
     column_id: z.string(),
+    project_id: z.string(),
 } )
 
 type TaskFormValues = z.infer<typeof taskFormSchema>
@@ -50,7 +51,7 @@ type TaskFormValues = z.infer<typeof taskFormSchema>
 
 export function EditTaskForm() {
     const { reset } = useForm()
-    const { handleCloseOverlay, singleCard, status, columns } = useAppContext()
+    const { handleCloseOverlay, singleCard, status, columns, boardId } = useAppContext()
 
     const form = useForm<TaskFormValues>( {
         resolver: zodResolver( taskFormSchema ),
@@ -66,7 +67,9 @@ export function EditTaskForm() {
 
     async function onSubmit( data: TaskFormValues ) {
 
-        const dataFile = JSON.stringify( data, null, 2 )
+        const newDataToPush = { ...data, project_id: boardId }
+
+        const dataFile = JSON.stringify( newDataToPush, null, 2 )
 
         const resp = await fetch( `http://localhost:4000/tasks/${ singleCard.id }`, {
             method: 'PUT',
@@ -89,8 +92,13 @@ export function EditTaskForm() {
         <section className="w-full h-full grid place-items-center px-2 sm:px-0">
 
             <div className='max-w-[30rem] w-full rounded-md p-8 bg-white dark:bg-L20212c'>
-
-                <h2 className="text-transform: capitalize text-black dark:text-white font-bold text-lg mb-6">edit task</h2>
+                <div className="flex justify-between">
+                    <h2 className="text-transform: capitalize text-black dark:text-white font-bold text-lg mb-6">edit task</h2>
+                    <X className="size-6 text-L828fa3 dark:text-Lea5555 transform hover:scale-150" onClick={ () => {
+                        handleCloseOverlay()
+                        reset()
+                    } } />
+                </div>
 
                 <Form { ...form }>
                     <form onSubmit={ form.handleSubmit( onSubmit ) } className="space-y-8 w-full">
@@ -141,7 +149,7 @@ export function EditTaskForm() {
                                                 <FormControl className="px-4 py-3 h-fit text-sm font-medium border-Lea5555 ">
                                                     <Input placeholder="e.g. Make coffee" { ...field } />
                                                 </FormControl>
-                                                <X className="text-L828fa3 dark:text-Lea5555" onClick={ () => remove( index ) } />
+                                                <X className="text-L828fa3 dark:text-Lea5555 transform hover:scale-110" onClick={ () => remove( index ) } />
                                             </div>
                                             <FormMessage className="text-Lea5555 text-xs" />
                                         </FormItem>

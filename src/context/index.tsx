@@ -16,6 +16,7 @@ interface CardProps {
     description: string;
     subtasks: { value: string }[];
     column_id: string;
+    project_id: string;
 }
 
 interface Projects {
@@ -35,6 +36,7 @@ interface Task {
     description: string;
     subtasks: { value: string }[];
     column_id: string;
+    project_id: string;
 }
 
 interface AppContextProps {
@@ -47,11 +49,17 @@ interface AppContextProps {
     setCardId: React.Dispatch<React.SetStateAction<string>>;
     setStatus: React.Dispatch<React.SetStateAction<string>>;
     status: string;
+    boardId: string;
+    setBoardId: React.Dispatch<React.SetStateAction<string>>;
     singleCard: CardProps;
     projects: Projects[];
     columns: Column[];
+    allColumns: Column[];
     tasks: Task[];
-    fetchAllData: () => void;
+    fetchAllBoardData: () => void;
+    fetchAllColumnData: ( e: number | string ) => void;
+    fetchAllColumns: () => void;
+    fetchAllTaskData: () => void;
     cardComponentId: ( taskId: string ) => void;
     handleOverlayOpen: () => void;
     handleAddTask: () => void;
@@ -75,16 +83,23 @@ const AppContext = createContext<AppContextProps>( {
         title: "",
         description: "",
         subtasks: [],
-        column_id: ""
+        column_id: "",
+        project_id: ""
     },
     status: '',
+    boardId: '',
+    setBoardId: () => { },
     setStatus: () => { },
     projects: [],
     columns: [],
+    allColumns: [],
     tasks: [],
     setCardId: () => { },
     cardComponentId: () => { },
-    fetchAllData: () => { },
+    fetchAllBoardData: () => { },
+    fetchAllColumns: () => { },
+    fetchAllColumnData: () => { },
+    fetchAllTaskData: () => { },
     handleOverlayOpen: () => { },
     handleAddTask: () => { },
     handleAddBoard: () => { },
@@ -101,7 +116,8 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
         title: "",
         description: "",
         subtasks: [],
-        column_id: ""
+        column_id: "",
+        project_id: ""
     } )
 
     const [ overlay, setOverlay ] = useState<boolean>( false );
@@ -110,8 +126,10 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
     const [ width, setWidth ] = useState<string>( 'w-calc' );
     const [ projects, setProjects ] = useState<Projects[]>( [] );
     const [ columns, setColumns ] = useState<Column[]>( [] );
+    const [ allColumns, setAllColumns ] = useState<Column[]>( [] );
     const [ tasks, setTasks ] = useState<Task[]>( [] );
     const [ status, setStatus ] = useState<string>( "Todo" )
+    const [ boardId, setBoardId ] = useState<string>( '' )
 
 
 
@@ -159,21 +177,66 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
         setOverlay( !overlay )
     };
 
-    const fetchAllData = async () => {
+    const fetchAllBoardData = async () => {
         try {
-            const [ projectsRes, columnsRes, taskRes ] = await Promise.all( [ fetch( `http://localhost:4000/projects` ), fetch( `http://localhost:4000/columns` ), fetch( `http://localhost:4000/tasks` ) ] );
-            const [ projects, columns, task ] = await Promise.all( [ projectsRes.json(), columnsRes.json(), taskRes.json() ] );
-            // return { projects, columns, task }
+            const projectsRes = await fetch( `http://localhost:4000/projects` );
+            const projects = await projectsRes.json();
+
             setProjects( projects );
-            setColumns( columns );
-            setTasks( task );
 
-
-            // setCards( response );
         } catch ( error ) {
             console.error( 'Error fetching data:', error );
         }
     }
+
+    const fetchAllColumns = async () => {
+        try {
+            const columnsRes = await fetch( `http://localhost:4000/columns` );
+            const columns = await columnsRes.json();
+
+            setAllColumns( columns );
+
+        } catch ( error ) {
+            console.error( 'Error fetching data:', error );
+        }
+    }
+
+    const fetchAllColumnData = async ( e: string | number ) => {
+        try {
+            const columnsRes = await fetch( `http://localhost:4000/columns/${ e }` );
+
+            // Check if the response is OK 
+            if ( !columnsRes.ok ) {
+                throw new Error( `Error: ${ columnsRes.status } ${ columnsRes.statusText }` );
+            }
+            const columns = await columnsRes.json();
+
+            const flattenColumn = Object.keys( columns ).filter( key => !isNaN( Number( key ) ) ).map( key => ( {
+                id: ( parseInt( key ) + 1 ).toString(),
+                name: columns[ key ].name,
+                project_id: columns[ key ].project_id
+            } )
+            )
+
+            setColumns( flattenColumn );
+
+        } catch ( error ) {
+            console.error( 'Error fetching data:', error );
+        }
+    }
+
+    const fetchAllTaskData = async () => {
+        try {
+            const taskRes = await fetch( `http://localhost:4000/tasks` );
+            const task = await taskRes.json();
+
+            setTasks( task );
+
+        } catch ( error ) {
+            console.error( 'Error fetching data:', error );
+        }
+    }
+
     const cardComponentId = async ( taskId: string ) => {
         const urlGet = await fetch( `http://localhost:4000/tasks/${ taskId }` )
         const response = await urlGet.json()
@@ -212,17 +275,23 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
 
     return (
         <AppContext.Provider value={ {
+            boardId,
+            setBoardId,
             setOverlay,
             overlay,
             setPlaceHolder,
             placeHolder,
-            fetchAllData,
+            fetchAllBoardData,
+            fetchAllColumnData,
+            fetchAllColumns,
+            fetchAllTaskData,
             cardId,
             width,
             setCardId,
             singleCard,
             projects,
             columns,
+            allColumns,
             tasks,
             status,
             setStatus,

@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react';
 
 export function Card() {
 
-    const { handleOverlayOpen, fetchAllData, tasks, columns, cardComponentId, setStatus } = useAppContext();
+    const { handleOverlayOpen, fetchAllColumnData, fetchAllTaskData, tasks, columns, cardComponentId, setStatus, boardId } = useAppContext();
     const mounted = useRef( false );
 
 
@@ -15,7 +15,8 @@ export function Card() {
         // Had to use component mount and the card dependency to manipulate the DOM anytime the card state changes
 
         mounted.current = true;
-        fetchAllData();
+        fetchAllColumnData( boardId );
+        fetchAllTaskData();
         return () => {
             mounted.current = false;
         };
@@ -25,17 +26,18 @@ export function Card() {
     return (
         <>
             { columns.map( ( column ) => {
+                const filteredTasks = tasks.filter( task => task.column_id === column.id && task.project_id === boardId )
                 return (
                     <section className='w-[280px]' key={ column.id }>
                         {/* column heading */ }
                         <div className='w-[280px] mb-6 flex items-center gap-3'>
                             <div className='w-4 h-4 rounded-full bg-[#49c4e5]'></div>
-                            <h3 className='text-transform: uppercase tracking-widest text-xs font-bold text-L828fa3'>{ `${ column.name } (${ tasks.filter( task => task.column_id === column.id ).length })` }</h3>
+                            <h3 className='text-transform: uppercase tracking-widest text-xs font-bold text-L828fa3'>{ `${ column.name } (${ filteredTasks.length })` }</h3>
                         </div>
 
                         {/* card section where they are populated */ }
                         <ul className="w-[280px]">
-                            { tasks.filter( ( task ) => task.column_id === column.id ).map( ( task ) => (
+                            { filteredTasks.map( ( task ) => (
                                 <li className=' w-full px-4 py-6 shadow-sm bg-white dark:bg-L2b2c37 rounded-md mb-5 text-pretty cursor-pointer hover:text-L635fc7 text-black dark:text-white dark:hover:text-L635fc7' onClick={ () => {
                                     setStatus( column.name )
                                     cardComponentId( task.id )

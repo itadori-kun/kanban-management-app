@@ -4,6 +4,7 @@
 import { useAppContext } from '@/context';
 import EmptyDashboard from '@/components/emptyDashboard';
 import { Header } from '@/components/header';
+import { notFound } from 'next/navigation';
 
 
 import { Card } from '@/components/card';
@@ -11,14 +12,19 @@ import { useEffect, useRef } from 'react';
 
 
 
-export default function Home() {
+export default function Home( { params, }: { params: { slug: string } } ) {
 
-  const { overlay, placeHolder, columns, width, fetchAllData, handleCreateColumnsOverlay } = useAppContext();
+  const { overlay, placeHolder, columns, width, projects, fetchAllColumnData, fetchAllTaskData, handleCreateColumnsOverlay } = useAppContext();
   const mounted = useRef( false );
 
   useEffect( () => {
+    const checkProject = projects.find( ( item ) => item.url === params.slug );
+    if ( !checkProject ) {
+      notFound();
+    }
     mounted.current = true;
-    fetchAllData();
+    fetchAllColumnData( checkProject.id );
+    fetchAllTaskData();
     return () => {
       mounted.current = false;
     };

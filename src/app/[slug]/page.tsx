@@ -4,25 +4,33 @@
 import { useAppContext } from '@/context';
 import EmptyDashboard from '@/components/emptyDashboard';
 import { Header } from '@/components/header';
-
+import { notFound } from 'next/navigation';
 
 import { Card } from '@/components/card';
 import { useEffect, useRef } from 'react';
 
 
 
-export default function Home() {
+export default function Home( { params, }: { params: { slug: string } } ) {
 
-    const { overlay, placeHolder, columns, width, fetchAllData, handleCreateColumnsOverlay } = useAppContext();
+    const { overlay, placeHolder, columns, width, fetchAllColumnData, fetchAllTaskData, handleCreateColumnsOverlay, boardId, projects } = useAppContext();
     const mounted = useRef( false );
+    // const pathname = usePathname();
 
     useEffect( () => {
+        // const check = pathname.split( '/' )[ 1 ];
+        // console.log( check, 'check' )
+        const checkProject = projects.find( ( item ) => item.url === params.slug );
+        if ( !checkProject ) {
+            notFound();
+        }
         mounted.current = true;
-        fetchAllData();
+        fetchAllColumnData( boardId || checkProject.id );
+        fetchAllTaskData();
         return () => {
             mounted.current = false;
         };
-    }, [] );
+    }, [ boardId ] );
 
 
     return (
