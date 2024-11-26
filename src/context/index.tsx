@@ -8,6 +8,7 @@ import { DeleteSection } from "@/components/deleteSection";
 import { Todo } from "@/components/todo";
 import { EditTaskForm } from "@/components/editTaskForm";
 import { AddNewColumn } from "@/components/addNewColumn";
+import { DeleteBoard } from "@/components/deleteBoard";
 
 
 interface CardProps {
@@ -65,7 +66,8 @@ interface AppContextProps {
     handleAddTask: () => void;
     handleAddBoard: () => void;
     handleEditBoard: () => void;
-    handleDeleteBoard: ( header: string, text: string, type: string, id: string ) => void;
+    handleDeleteTask: ( header: string ) => void;
+    handleDeleteBoard: ( header: string ) => void;
     handleEditTask: () => void;
     handleCloseOverlay: () => void;
     handleCreateColumnsOverlay: () => void;
@@ -105,6 +107,7 @@ const AppContext = createContext<AppContextProps>( {
     handleAddBoard: () => { },
     handleEditBoard: () => { },
     handleDeleteBoard: () => { },
+    handleDeleteTask: () => { },
     handleEditTask: () => { },
     handleCloseOverlay: () => { },
     handleCreateColumnsOverlay: () => { },
@@ -163,8 +166,13 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
         setOverlay( !overlay )
     }
 
-    const handleDeleteBoard = ( header: string, text: string, type: string, id: string ): void => {
-        setPlaceHolder( <DeleteSection header={ header } text={ text } type={ type } id={ id } /> );
+    const handleDeleteBoard = ( header: string ): void => {
+        setPlaceHolder( <DeleteBoard header={ header } /> );
+        setOverlay( !overlay );
+    }
+
+    const handleDeleteTask = ( header: string ): void => {
+        setPlaceHolder( <DeleteSection header={ header } /> );
         // setOverlay( !overlay )
     }
 
@@ -301,6 +309,7 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
             handleAddBoard,
             handleEditBoard,
             handleDeleteBoard,
+            handleDeleteTask,
             handleEditTask,
             handleCloseOverlay,
             handleCreateColumnsOverlay

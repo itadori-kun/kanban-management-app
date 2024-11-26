@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useFieldArray, useForm } from "react-hook-form"
 import { cn } from "@/lib/utils"
+import { useEffect, useRef } from "react"
 
 
 import { Button } from "@/components/ui/button"
@@ -62,7 +63,8 @@ const defaultValues: Partial<TaskFormValues> = {
 
 export function TaskForm() {
     const { reset } = useForm()
-    const { handleCloseOverlay, tasks, status, columns, boardId } = useAppContext()
+    const mounted = useRef( false )
+    const { handleCloseOverlay, tasks, status, setStatus, columns, boardId } = useAppContext()
 
     const form = useForm<TaskFormValues>( {
         resolver: zodResolver( taskFormSchema ),
@@ -77,9 +79,7 @@ export function TaskForm() {
 
     async function onSubmit( data: TaskFormValues ) {
 
-        // Determine the new unique `id` based on the highest existing id but we are using tasks since in the context we have tasks which carries the entire database data
-        // const latestId = tasks.reduce( ( maxId: number, task: { id: string } ) => Math.max( maxId, parseInt( task?.id ) ), 1 );
-        // const newId = latestId + 1;
+        // Get the current tasks
         const taskIds = Object.keys( tasks ).map( Number ).filter( id => !isNaN( id ) );
         const newId = taskIds.length > 0 ? Math.max( ...taskIds ) + 1 : 1;
 
@@ -105,6 +105,14 @@ export function TaskForm() {
         handleCloseOverlay()
 
     }
+
+    useEffect( () => {
+        mounted.current = true
+        // setStatus( "Todo" )
+        return () => {
+            mounted.current = false
+        }
+    }, [] )
 
     return (
         <section className="w-full h-full grid place-items-center px-2 sm:px-0">

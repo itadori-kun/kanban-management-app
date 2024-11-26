@@ -14,15 +14,16 @@ import { useEffect, useRef } from 'react';
 
 export default function Home( { params, }: { params: { slug: string } } ) {
 
-  const { overlay, placeHolder, columns, width, projects, fetchAllColumnData, fetchAllTaskData, handleCreateColumnsOverlay } = useAppContext();
+  const { overlay, placeHolder, columns, width, projects, fetchAllColumnData, fetchAllTaskData, fetchAllBoardData, handleCreateColumnsOverlay } = useAppContext();
   const mounted = useRef( false );
 
   useEffect( () => {
+    mounted.current = true;
+    fetchAllBoardData();
     const checkProject = projects.find( ( item ) => item.url === params.slug );
     if ( !checkProject ) {
       notFound();
     }
-    mounted.current = true;
     fetchAllColumnData( checkProject.id );
     fetchAllTaskData();
     return () => {

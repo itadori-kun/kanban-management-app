@@ -26,7 +26,7 @@ import {
 
 export function Todo() {
 
-    const { handleDeleteBoard, handleEditTask, singleCard, status } = useAppContext();
+    const { handleDeleteTask, handleEditTask, singleCard, status } = useAppContext();
 
     return (
         <section className='w-full h-full grid place-items-center px-2 sm:px-0'>
@@ -54,7 +54,7 @@ export function Todo() {
                                 <span>Edit Task</span>
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem className='cursor-pointer text-Lea5555 font-medium text-sm hover:text-Lea5555' onClick={ () => handleDeleteBoard( 'task', 'UI', 'task', `${ singleCard.id }` ) }>
+                            <DropdownMenuItem className='cursor-pointer text-Lea5555 font-medium text-sm hover:text-Lea5555' onClick={ () => handleDeleteTask( singleCard.title ) }>
                                 <span>Delete Task</span>
                             </DropdownMenuItem>
 
@@ -67,7 +67,6 @@ export function Todo() {
 
                     <p className='text-sm text-L828fa3 first-letter:text-transform: capitalize'>
                         { singleCard.description }
-                        {/* We know what we&apos;re planning to build for version one. Now we need to finalise the first pricing model we&apos;ll use. Keep iterating the subtasks until we have a coherent proposition. */ }
                     </p>
 
                 </div>

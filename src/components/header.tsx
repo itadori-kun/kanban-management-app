@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useParams } from "next/navigation";
 
+
+
 export function Header() {
 
     const params = useParams();
@@ -31,6 +33,9 @@ export function Header() {
 
     // Set the navLogoDisplay to false
     const [ navLogoDisplay, setNavLogoDisplay ] = useState<boolean>( false );
+
+
+    // useEffect to check if the sidebar is expanded and then display the logo
 
     useEffect( () => {
         const sidebarItems = document.querySelector( '.group' ) as HTMLElement;
@@ -101,7 +106,8 @@ export function Header() {
                             <span>Edit Board</span>
                         </DropdownMenuItem>
                         {/* change the last parameter for the deleteboard since this is outcode. */ }
-                        <DropdownMenuItem className='cursor-pointer text-Lea5555 font-medium text-sm hover:text-Lea5555' onClick={ () => handleDeleteBoard( 'board', 'UI', 'board', '3' ) }>
+                        <DropdownMenuItem className='cursor-pointer text-Lea5555 font-medium text-sm hover:text-Lea5555' onClick={ () => handleDeleteBoard( transformedParams ) }
+                        >
                             <span>Delete Board</span>
                         </DropdownMenuItem>
 

@@ -1,18 +1,6 @@
 {
   "projects": [
     {
-      "id": "1",
-      "title": "platform launch",
-      "url": "platform_launch",
-      "icon": "BoardIcon"
-    },
-    {
-      "id": "2",
-      "title": "marketing plan",
-      "url": "marketing_plan",
-      "icon": "BoardIcon"
-    },
-    {
       "id": "3",
       "title": "roadmap",
       "url": "roadmap",
@@ -30,9 +18,9 @@
       "url": "web_dev"
     },
     {
-      "id": "6",
-      "title": "new dev",
-      "url": "new_dev"
+      "id": "1",
+      "title": "New board",
+      "url": "new_board"
     }
   ],
   "tasks": [
@@ -50,21 +38,6 @@
       "column_id": "1",
       "project_id": "5",
       "id": "1"
-    },
-    {
-      "title": "hey there just testing",
-      "description": "This is a new test property, want to see it it works",
-      "subtasks": [
-        {
-          "value": "hey it does not work"
-        },
-        {
-          "value": "this is a new subtask to see"
-        }
-      ],
-      "column_id": "5",
-      "id": "3",
-      "project_id": "5"
     },
     {
       "id": "4",
@@ -118,90 +91,6 @@
       "id": "7"
     },
     {
-      "id": "2",
-      "title": "performance testing",
-      "description": "testing for performance",
-      "subtasks": [
-        {
-          "value": "what makes this a great performance"
-        },
-        {
-          "value": "describe it "
-        },
-        {
-          "value": "redo it "
-        },
-        {
-          "value": "create it"
-        }
-      ],
-      "column_id": "3",
-      "project_id": "2"
-    },
-    {
-      "id": "8",
-      "title": "Performance check",
-      "description": "new task board",
-      "subtasks": [
-        {
-          "value": "hey"
-        },
-        {
-          "value": "Open the figma file and read the instructions to learn more"
-        },
-        {
-          "value": "Gather all the requirements "
-        },
-        {
-          "value": "Drink coffee"
-        }
-      ],
-      "column_id": "2",
-      "project_id": "2"
-    },
-    {
-      "title": "fff",
-      "description": "ffffff",
-      "subtasks": [
-        {
-          "value": "fffff"
-        }
-      ],
-      "column_id": "4",
-      "project_id": "1",
-      "id": "9"
-    },
-    {
-      "title": "New check",
-      "description": "rrfrfrhahahah",
-      "subtasks": [
-        {
-          "value": "fff"
-        },
-        {
-          "value": "tttt"
-        }
-      ],
-      "column_id": "2",
-      "project_id": "1",
-      "id": "11"
-    },
-    {
-      "id": "10",
-      "title": "a new task",
-      "description": "just a random task",
-      "subtasks": [
-        {
-          "value": "random"
-        },
-        {
-          "value": "dont forget the delete board"
-        }
-      ],
-      "column_id": "4",
-      "project_id": "5"
-    },
-    {
       "id": "11",
       "title": "just making a new task",
       "description": "dont know",
@@ -210,57 +99,50 @@
           "value": "rest"
         }
       ],
-      "column_id": "1",
-      "project_id": "6"
+      "column_id": "3",
+      "project_id": "5"
+    },
+    {
+      "id": "10",
+      "title": "sss",
+      "description": "sssx",
+      "subtasks": [
+        {
+          "value": "xxxx"
+        }
+      ],
+      "column_id": "",
+      "project_id": "2"
+    },
+    {
+      "id": "7",
+      "title": "Ayanakoji is a menace",
+      "description": "This isnt a great time",
+      "subtasks": [
+        {
+          "value": "A new anime sect"
+        },
+        {
+          "value": "Itadori-kun"
+        }
+      ],
+      "column_id": "4",
+      "project_id": "1"
+    },
+    {
+      "id": "8",
+      "title": "testing",
+      "description": "testing to see what applies for this ",
+      "subtasks": [
+        {
+          "value": "beg"
+        }
+      ],
+      "column_id": "2",
+      "project_id": "1"
     }
   ],
   "columns": [
-    {
-      "0": {
-        "name": "todo",
-        "project_id": "1",
-        "id": "1"
-      },
-      "1": {
-        "name": "doing",
-        "project_id": "1",
-        "id": "2"
-      },
-      "2": {
-        "name": "done",
-        "project_id": "1",
-        "id": "3"
-      },
-      "3": {
-        "name": "vare",
-        "project_id": "1",
-        "id": "4"
-      },
-      "id": "1"
-    },
-    {
-      "0": {
-        "name": "todo",
-        "project_id": "2",
-        "id": "1"
-      },
-      "1": {
-        "name": "doing",
-        "project_id": "2",
-        "id": "2"
-      },
-      "2": {
-        "name": "done",
-        "project_id": "2",
-        "id": "3"
-      },
-      "3": {
-        "name": "test",
-        "project_id": "2",
-        "id": "4"
-      },
-      "id": "2"
-    },
     {
       "0": {
         "name": "todo",
@@ -337,31 +219,26 @@
     },
     {
       "0": {
-        "id": "1",
         "name": "Todo",
-        "project_id": "6"
+        "project_id": "1",
+        "id": "1"
       },
       "1": {
-        "id": "2",
         "name": "Doing",
-        "project_id": "6"
+        "project_id": "1",
+        "id": "2"
       },
       "2": {
-        "id": "3",
         "name": "Done",
-        "project_id": "6"
+        "project_id": "1",
+        "id": "3"
       },
       "3": {
-        "id": "4",
-        "name": "Vanessa",
-        "project_id": "6"
+        "name": "New sect",
+        "project_id": "1",
+        "id": "4"
       },
-      "4": {
-        "id": "5",
-        "name": "Web",
-        "project_id": "6"
-      },
-      "id": "6"
+      "id": "1"
     }
   ]
 }
