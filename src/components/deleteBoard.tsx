@@ -6,42 +6,7 @@ import { Props } from "@/types/propsInterface";
 
 export function DeleteBoard( props: Props ) {
 
-    const { handleCloseOverlay, boardId } = useAppContext();
-
-    async function deleteAllTask() {
-        try {
-            // Fetch all task by it's matching project id
-            const response = await fetch( `http://localhost:4000/tasks/?project_id=${ boardId }` );
-            // Check if the response is ok
-            if ( !response.ok ) {
-                throw new Error( `Task response status: ${ response.status }` );
-            }
-            // Convert the response to json
-            const tasks = await response.json();
-
-            // Map through the tasks and delete each task by it's id
-            const deleteTasks = tasks.map( ( task: { id: string | number } ) => {
-                fetch( `http://localhost:4000/tasks/${ task.id }`, {
-                    method: "DELETE",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                } );
-
-            } );
-            // Await the deleteTasks
-            const deleteResponse = await Promise.all( deleteTasks );
-            // Check if the response is ok for each individual task
-            deleteResponse.forEach( ( response: Response, index: number | string ) => {
-                if ( !response.ok ) {
-                    console.error( `Failed to delete task with ID ${ tasks[ index ].id }: ${ response.status }` );
-                }
-            } );
-        } catch ( error ) {
-            console.error( 'Error deleting tasks:', error );
-            return;
-        }
-    }
+    const { handleCloseOverlay, boardId, deleteAllTask } = useAppContext();
 
 
     const handleDelete = async () => {

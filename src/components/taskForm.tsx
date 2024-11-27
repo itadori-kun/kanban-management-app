@@ -64,7 +64,7 @@ const defaultValues: Partial<TaskFormValues> = {
 export function TaskForm() {
     const { reset } = useForm()
     const mounted = useRef( false )
-    const { handleCloseOverlay, tasks, status, setStatus, columns, boardId } = useAppContext()
+    const { handleCloseOverlay, tasks, status, columns, boardId } = useAppContext()
 
     const form = useForm<TaskFormValues>( {
         resolver: zodResolver( taskFormSchema ),
@@ -79,9 +79,13 @@ export function TaskForm() {
 
     async function onSubmit( data: TaskFormValues ) {
 
-        // Get the current tasks
-        const taskIds = Object.keys( tasks ).map( Number ).filter( id => !isNaN( id ) );
-        const newId = taskIds.length > 0 ? Math.max( ...taskIds ) + 1 : 1;
+        // Get the current tasks by creating a unique id for the new task
+        const sortedIds = tasks.map( task => parseInt( task.id ) ).sort( ( a, b ) => a - b );
+        let newId = 1;
+        for ( const id of sortedIds ) {
+            if ( id !== newId ) break;
+            newId++;
+        }
 
         // Add the new `id` to the data
         const newData = { ...data, id: newId.toString(), project_id: boardId };

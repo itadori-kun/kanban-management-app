@@ -8,19 +8,19 @@ import { notFound } from 'next/navigation';
 
 import { Card } from '@/components/card';
 import { useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 
 
 
-export default function Home( { params, }: { params: { slug: string } } ) {
+export default function Home() {
 
     const { overlay, placeHolder, columns, width, fetchAllColumnData, fetchAllTaskData, handleCreateColumnsOverlay, boardId, projects } = useAppContext();
     const mounted = useRef( false );
-    // const pathname = usePathname();
+    const pathname = usePathname();
 
     useEffect( () => {
-        // const check = pathname.split( '/' )[ 1 ];
-        // console.log( check, 'check' )
-        const checkProject = projects.find( ( item ) => item.url === params.slug );
+        const check = pathname.split( '/' )[ 1 ];
+        const checkProject = projects.find( ( item ) => item.url === check );
         if ( !checkProject ) {
             notFound();
         }

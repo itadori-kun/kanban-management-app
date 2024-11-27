@@ -50,8 +50,6 @@ export function AddNewColumn() {
     async function onSubmit( data: NewColumnValues ) {
 
         // Determine the new unique `id` based on the highest existing id but we are using columns since in the context we have columns which carries the entire database data
-        // const latestId = columns.reduce( ( maxId: number, column: { id: string } ) => Math.max( maxId, parseInt( column?.id ) ), 1 );
-        // const newId = latestId + 1;
 
         const columnIds = Object.keys( columns ).map( Number ).filter( id => !isNaN( id ) );
         const newId = columnIds.length > 0 ? Math.max( ...columnIds ) + 1 : 1;
@@ -60,7 +58,6 @@ export function AddNewColumn() {
         const newData = { ...columns, [ newId ]: { ...data, id: ( newId + 1 ).toString() } };
 
         const dataFile = JSON.stringify( newData, null, 2 )
-        console.log( dataFile, 'new column create' )
 
         const resp = await fetch( `http://localhost:4000/columns/${ boardId }`, {
             method: 'PATCH',

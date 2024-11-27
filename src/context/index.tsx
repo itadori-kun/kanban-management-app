@@ -39,7 +39,9 @@ interface Task {
     column_id: string;
     project_id: string;
 }
-
+interface SingleBoard extends Projects {
+    columns: Column[];
+}
 interface AppContextProps {
     overlay: boolean;
     setOverlay: React.Dispatch<React.SetStateAction<boolean>>;
@@ -53,11 +55,13 @@ interface AppContextProps {
     boardId: string;
     setBoardId: React.Dispatch<React.SetStateAction<string>>;
     singleCard: CardProps;
+    singleBoard: Projects;
     projects: Projects[];
     columns: Column[];
     allColumns: Column[];
     tasks: Task[];
     fetchAllBoardData: () => void;
+    fetchAllSingleBoardData: ( e: number | string ) => void;
     fetchAllColumnData: ( e: number | string ) => void;
     fetchAllColumns: () => void;
     fetchAllTaskData: () => void;
@@ -67,6 +71,7 @@ interface AppContextProps {
     handleAddBoard: () => void;
     handleEditBoard: () => void;
     handleDeleteTask: ( header: string ) => void;
+    deleteAllTask: () => void;
     handleDeleteBoard: ( header: string ) => void;
     handleEditTask: () => void;
     handleCloseOverlay: () => void;
@@ -88,6 +93,12 @@ const AppContext = createContext<AppContextProps>( {
         column_id: "",
         project_id: ""
     },
+    singleBoard: {
+        id: '',
+        title: '',
+        url: '',
+        icon: ''
+    },
     status: '',
     boardId: '',
     setBoardId: () => { },
@@ -99,6 +110,7 @@ const AppContext = createContext<AppContextProps>( {
     setCardId: () => { },
     cardComponentId: () => { },
     fetchAllBoardData: () => { },
+    fetchAllSingleBoardData: () => { },
     fetchAllColumns: () => { },
     fetchAllColumnData: () => { },
     fetchAllTaskData: () => { },
@@ -108,6 +120,7 @@ const AppContext = createContext<AppContextProps>( {
     handleEditBoard: () => { },
     handleDeleteBoard: () => { },
     handleDeleteTask: () => { },
+    deleteAllTask: () => { },
     handleEditTask: () => { },
     handleCloseOverlay: () => { },
     handleCreateColumnsOverlay: () => { },
@@ -123,6 +136,19 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
         project_id: ""
     } )
 
+    const [ singleBoard, setSingleBoard ] = useState<SingleBoard>( {
+        id: '',
+        title: '',
+        url: '',
+        icon: '',
+        columns: [
+            {
+                id: '',
+                name: '',
+                project_id: ''
+            }
+        ]
+    } )
     const [ overlay, setOverlay ] = useState<boolean>( false );
     const [ placeHolder, setPlaceHolder ] = useState<JSX.Element>( <></> );
     const [ cardId, setCardId ] = useState( "" )
@@ -196,6 +222,24 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
             console.error( 'Error fetching data:', error );
         }
     }
+    const fetchAllSingleBoardData = ( e: string | number ) => {
+        // flatten the columns object to an array
+        const flattenColumn = Object.keys( columns ).filter( key => !isNaN( Number( key ) ) ).map( key => {
+            const columnKey = Number( key );
+            return {
+                id: ( columnKey + 1 ).toString(),
+                name: columns[ columnKey ].name,
+                project_id: columns[ columnKey ].project_id
+            };
+        } );
+        // filter the projects array to get the project with the id that matches the id passed in the function
+        const filterProjects = projects.filter( ( project: Projects ) => project.id === e );
+        // use a spread operator to combine the filtered project with the flatten column array. Since the filtered project is always going to be at the first index, we hardcode the value when spreading the object
+        const combineBoardAndColumn = { ...filterProjects[ 0 ], columns: flattenColumn }
+        // set the single board state to the combined object
+        setSingleBoard( combineBoardAndColumn );
+
+    }
 
     const fetchAllColumns = async () => {
         try {
@@ -254,6 +298,41 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
         setSingleCard( response )
     }
 
+    const deleteAllTask = async () => {
+        try {
+            // Fetch all task by it's matching project id
+            const response = await fetch( `http://localhost:4000/tasks/?project_id=${ boardId }` );
+            // Check if the response is ok
+            if ( !response.ok ) {
+                throw new Error( `Task response status: ${ response.status }` );
+            }
+            // Convert the response to json
+            const tasks = await response.json();
+
+            // Map through the tasks and delete each task by it's id
+            const deleteTasks = tasks.map( ( task: { id: string | number } ) => {
+                fetch( `http://localhost:4000/tasks/${ task.id }`, {
+                    method: "DELETE",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                } );
+
+            } );
+            // Await the deleteTasks
+            const deleteResponse = await Promise.all( deleteTasks );
+            // Check if the response is ok for each individual task
+            deleteResponse.forEach( ( response: Response, index: number | string ) => {
+                if ( !response.ok ) {
+                    console.error( `Failed to delete task with ID ${ tasks[ index ].id }: ${ response.status }` );
+                }
+            } );
+        } catch ( error ) {
+            console.error( 'Error deleting tasks:', error );
+            return;
+        }
+    }
+
     useEffect( () => {
         const sidebarItems = document.querySelector( '.group' ) as HTMLElement;
 
@@ -290,6 +369,8 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
             setPlaceHolder,
             placeHolder,
             fetchAllBoardData,
+            fetchAllSingleBoardData,
+            singleBoard,
             fetchAllColumnData,
             fetchAllColumns,
             fetchAllTaskData,
@@ -310,6 +391,7 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
             handleEditBoard,
             handleDeleteBoard,
             handleDeleteTask,
+            deleteAllTask,
             handleEditTask,
             handleCloseOverlay,
             handleCreateColumnsOverlay

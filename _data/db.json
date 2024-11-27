@@ -14,8 +14,8 @@
     },
     {
       "id": "4",
-      "title": "Web dev",
-      "url": "web_dev"
+      "title": "Web dev tech",
+      "url": "web_dev_tech"
     },
     {
       "id": "1",
@@ -64,7 +64,6 @@
       "project_id": "4"
     },
     {
-      "id": "6",
       "title": "Are you Paying the tickets",
       "description": "Just checking to see ",
       "subtasks": [
@@ -73,22 +72,8 @@
         }
       ],
       "column_id": "3",
-      "project_id": "3"
-    },
-    {
-      "title": "Done Paying the tickets",
-      "description": "Just checking to see ",
-      "subtasks": [
-        {
-          "value": "Done paying Tickets"
-        },
-        {
-          "value": "hey waddup"
-        }
-      ],
-      "column_id": "1",
       "project_id": "3",
-      "id": "7"
+      "id": "6"
     },
     {
       "id": "11",
@@ -103,42 +88,102 @@
       "project_id": "5"
     },
     {
-      "id": "10",
-      "title": "sss",
-      "description": "sssx",
+      "id": "9",
+      "title": "pay tickets",
+      "description": "pay your tickets",
       "subtasks": [
         {
-          "value": "xxxx"
+          "value": "new tickets"
+        }
+      ],
+      "column_id": "1",
+      "project_id": "3"
+    },
+    {
+      "id": "10",
+      "title": "another task",
+      "description": "jjjjj",
+      "subtasks": [
+        {
+          "value": "dkjsds"
+        }
+      ],
+      "column_id": "2",
+      "project_id": "3"
+    },
+    {
+      "id": "15",
+      "title": "skuy",
+      "description": "sjdsd",
+      "subtasks": [
+        {
+          "value": "cnjksdns"
+        },
+        {
+          "value": "jndskdn"
+        }
+      ],
+      "column_id": "5",
+      "project_id": "4"
+    },
+    {
+      "id": "11",
+      "title": "ddd",
+      "description": "fvdvg",
+      "subtasks": [
+        {
+          "value": "gbfgbf"
+        }
+      ],
+      "column_id": "5",
+      "project_id": "4"
+    },
+    {
+      "id": "2",
+      "title": "q",
+      "description": "qq",
+      "subtasks": [
+        {
+          "value": "q"
         }
       ],
       "column_id": "",
-      "project_id": "2"
+      "project_id": "1"
     },
     {
       "id": "7",
-      "title": "Ayanakoji is a menace",
-      "description": "This isnt a great time",
+      "title": "a",
+      "description": "aa",
       "subtasks": [
         {
-          "value": "A new anime sect"
-        },
-        {
-          "value": "Itadori-kun"
+          "value": "a"
         }
       ],
-      "column_id": "4",
+      "column_id": "1",
       "project_id": "1"
     },
     {
       "id": "8",
-      "title": "testing",
-      "description": "testing to see what applies for this ",
+      "title": "qq",
+      "description": "qqq",
       "subtasks": [
         {
-          "value": "beg"
+          "value": "qq"
         }
       ],
       "column_id": "2",
+      "project_id": "1"
+    },
+    {
+      "id": "3",
+      "title": "arrest",
+      "description": "hey",
+      "subtasks": [
+        {
+          "value": "hhh"
+        }
+      ],
+      "column_id": "3",
       "project_id": "1"
     }
   ],
@@ -229,14 +274,9 @@
         "id": "2"
       },
       "2": {
-        "name": "Done",
-        "project_id": "1",
-        "id": "3"
-      },
-      "3": {
         "name": "New sect",
         "project_id": "1",
-        "id": "4"
+        "id": "3"
       },
       "id": "1"
     }

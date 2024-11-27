@@ -64,7 +64,6 @@ export function EditTaskForm() {
         control: form.control,
     } )
 
-
     async function onSubmit( data: TaskFormValues ) {
 
         const newDataToPush = { ...data, project_id: boardId }

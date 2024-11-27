@@ -29,7 +29,7 @@ export function Header() {
     const { theme, systemTheme } = useTheme();
 
     // Destructure the columns, handleAddTask, handleEditBoard, and handleDeleteBoard from the useAppContext hook
-    const { columns, handleAddTask, handleEditBoard, handleDeleteBoard } = useAppContext();
+    const { columns, handleAddTask, handleEditBoard, handleDeleteBoard, fetchAllSingleBoardData, boardId } = useAppContext();
 
     // Set the navLogoDisplay to false
     const [ navLogoDisplay, setNavLogoDisplay ] = useState<boolean>( false );
@@ -102,7 +102,10 @@ export function Header() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56 mr-4 mt-6 p-4">
 
-                        <DropdownMenuItem className='cursor-pointer font-medium text-sm text-L828fa3 hover:text-L828fa3' onClick={ handleEditBoard }>
+                        <DropdownMenuItem className='cursor-pointer font-medium text-sm text-L828fa3 hover:text-L828fa3' onClick={ () => {
+                            fetchAllSingleBoardData( boardId )
+                            handleEditBoard()
+                        } }>
                             <span>Edit Board</span>
                         </DropdownMenuItem>
                         {/* change the last parameter for the deleteboard since this is outcode. */ }
