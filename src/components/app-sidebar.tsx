@@ -88,6 +88,9 @@ export function AppSidebar(): JSX.Element {
                                         {/* populate existing board from storage or database*/ }
                                         { projects.map( ( item ) => {
                                             const isActive = pathname === `/${ item.url }`
+                                            // setBoardId to fetch all the columns and tasks of the selected board
+
+                                            isActive && setBoardId( item.id );
                                             return (
                                                 <SidebarMenuItem key={ item.title } className={ isActive ? "py-2 pl-6 mr-6 rounded-r-full text-white dark:hover:bg-white hover:bg-L635fc7/10 hover:text-L635fc7 bg-L635fc7" : "py-2 pl-6 mr-6 rounded-r-full text-L828fa3  dark:hover:bg-white hover:bg-L635fc7/10 hover:text-L635fc7" }>
                                                     <SidebarMenuButton asChild className="pl-1 text-base font-bold bg-transparent hover:bg-transparent hover:text-inherit active:text-inherit active:bg-transparent ">

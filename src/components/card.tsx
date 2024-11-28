@@ -28,9 +28,9 @@ export function Card() {
             { columns.map( ( column ) => {
                 const filteredTasks = tasks.filter( task => task.column_id === column.id && task.project_id === boardId )
                 return (
-                    <section className='w-[280px]' key={ column.id }>
+                    <section className='w-[280px] relative' key={ column.id }>
                         {/* column heading */ }
-                        <div className='w-[280px] mb-6 flex items-center gap-3'>
+                        <div className='w-[280px] mb-6 flex items-center gap-3 sticky top-0 '>
                             <div className='w-4 h-4 rounded-full bg-[#49c4e5]'></div>
                             <h3 className='text-transform: uppercase tracking-widest text-xs font-bold text-L828fa3'>{ `${ column.name } (${ filteredTasks.length })` }</h3>
                         </div>

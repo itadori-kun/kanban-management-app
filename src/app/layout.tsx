@@ -1,8 +1,6 @@
 import { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { SidebarProvider } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AppWrapper } from "@/context";
 
@@ -33,7 +31,7 @@ export default function RootLayout( {
   return (
     <html lang="en" suppressHydrationWarning >
       <body
-        className={ `${ PlusJakartaSans.variable } ${ PlusJakartaSansItalic.variable } antialiased h-screen  ` }
+        className={ `${ PlusJakartaSans.variable } ${ PlusJakartaSansItalic.variable } antialiased ` }
       >
         <ThemeProvider
           attribute="class"
@@ -42,12 +40,9 @@ export default function RootLayout( {
           disableTransitionOnChange
         >
           <AppWrapper>
-            <SidebarProvider>
-              <AppSidebar />
-              <main>
-                { children }
-              </main>
-            </SidebarProvider>
+            <main>
+              { children }
+            </main>
           </AppWrapper>
         </ThemeProvider>
       </body>

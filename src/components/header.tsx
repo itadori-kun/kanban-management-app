@@ -1,7 +1,6 @@
 'use client';
 import { useTheme } from "next-themes";
 import { useAppContext } from "@/context";
-import { useEffect, useState } from "react";
 
 import { DarkLogo } from "@/components/icons/darkLogo";
 import { LightLogo } from "@/components/icons/lightLogo";
@@ -22,41 +21,20 @@ import { useParams } from "next/navigation";
 export function Header() {
 
     const params = useParams();
-    // Remove any spacing from the params and replace with underscore but first convert to a string and then trim any whitespaces before splitting by underscore and joining with space. This will escape the tsx typeerror.
-    const transformedParams = params.slug?.toString().trim().split( "_" ).join( " " )
-
-    // Call the useTheme hook to get the theme and systemTheme
-    const { theme, systemTheme } = useTheme();
 
     // Destructure the columns, handleAddTask, handleEditBoard, and handleDeleteBoard from the useAppContext hook
     const { columns, handleAddTask, handleEditBoard, handleDeleteBoard, fetchAllSingleBoardData, boardId } = useAppContext();
 
-    // Set the navLogoDisplay to false
-    const [ navLogoDisplay, setNavLogoDisplay ] = useState<boolean>( false );
+    // Remove any spacing from the params and replace with underscore but first convert to a string and then trim any whitespaces before splitting by underscore and joining with space. This will escape the tsx typeerror.
+
+    const transformedParams = params.slug?.toString().trim().split( "_" ).join( " " )
+    // Call the useTheme hook to get the theme and systemTheme
+    const { theme, systemTheme } = useTheme();
+
+    // check the sidebarItems to see if it is expanded or not but first get the sidebarItems element by querying the group class
+    const sidebarItems = document.querySelector( '.group' ) as HTMLElement;
 
 
-    // useEffect to check if the sidebar is expanded and then display the logo
-
-    useEffect( () => {
-        const sidebarItems = document.querySelector( '.group' ) as HTMLElement;
-
-        const updateWidth = () => {
-            if ( sidebarItems.dataset.state === 'expanded' ) {
-                setNavLogoDisplay( navLogoDisplay );
-            } else {
-                setNavLogoDisplay( !navLogoDisplay );
-            }
-
-        };
-
-
-        updateWidth(); // Initial check
-
-        const observer = new MutationObserver( updateWidth );
-        observer.observe( sidebarItems, { attributes: true, attributeFilter: [ 'data-state' ] } );
-
-        return () => observer.disconnect(); // Cleanup on unmount
-    }, [] );
 
 
     return (
@@ -64,7 +42,7 @@ export function Header() {
 
             <div className='flex items-center h-full '>
                 {/* check to see if the sidebar is expanded so as to display the logo */ }
-                { navLogoDisplay ? (
+                { sidebarItems?.dataset?.state !== 'expanded' ? (
                     <div className='h-full  flex items-center'>
                         {/* check theme status to see what mode it is and then display appropriately */ }
                         { systemTheme === "light" || theme === 'light' ? ( <><DarkLogo /><MobileLogo /></> ) : ( <><LightLogo /><MobileLogo /></> ) }

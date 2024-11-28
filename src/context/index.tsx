@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 import { TaskForm } from "@/components/taskForm";
 import { AddNewBoard } from "@/components/addNewBoard";
 import { EditBoard } from "@/components/editNewBoard";
@@ -48,7 +48,6 @@ interface AppContextProps {
     placeHolder: JSX.Element;
     setPlaceHolder: React.Dispatch<React.SetStateAction<JSX.Element>>;
     cardId: string;
-    width: string;
     setCardId: React.Dispatch<React.SetStateAction<string>>;
     setStatus: React.Dispatch<React.SetStateAction<string>>;
     status: string;
@@ -84,7 +83,6 @@ const AppContext = createContext<AppContextProps>( {
     placeHolder: <></>,
     setPlaceHolder: () => { },
     cardId: "",
-    width: "",
     singleCard: {
         id: "",
         title: "",
@@ -152,7 +150,6 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
     const [ overlay, setOverlay ] = useState<boolean>( false );
     const [ placeHolder, setPlaceHolder ] = useState<JSX.Element>( <></> );
     const [ cardId, setCardId ] = useState( "" )
-    const [ width, setWidth ] = useState<string>( 'w-calc' );
     const [ projects, setProjects ] = useState<Projects[]>( [] );
     const [ columns, setColumns ] = useState<Column[]>( [] );
     const [ allColumns, setAllColumns ] = useState<Column[]>( [] );
@@ -333,29 +330,7 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
         }
     }
 
-    useEffect( () => {
-        const sidebarItems = document.querySelector( '.group' ) as HTMLElement;
 
-        const updateWidth = () => {
-            if ( sidebarItems.dataset.state === 'expanded' ) {
-                setWidth( 'w-calc' );
-                // setNavLogoDisplay( navLogoDisplay );
-            } else {
-                setWidth( 'w-screen' );
-                // setNavLogoDisplay( !navLogoDisplay );
-            }
-
-
-        };
-
-
-        updateWidth(); // Initial check
-
-        const observer = new MutationObserver( updateWidth );
-        observer.observe( sidebarItems, { attributes: true, attributeFilter: [ 'data-state' ] } );
-
-        return () => observer.disconnect(); // Cleanup on unmount
-    }, [ width ] );
 
 
 
@@ -375,7 +350,6 @@ export function AppWrapper( { children }: { children: React.ReactNode } ) {
             fetchAllColumns,
             fetchAllTaskData,
             cardId,
-            width,
             setCardId,
             singleCard,
             projects,

@@ -9,12 +9,12 @@ const config: Config = {
   ],
 	theme: {
     	extend: {
-			width: {
-				calc: 'calc(100vw - 16rem)',
-			},
-			screens: {
-				sm: '700px',
-			},
+    		width: {
+    			calc: 'calc(100vw - 16rem)'
+    		},
+    		screens: {
+    			sm: '700px'
+    		},
     		fontFamily: {
     			plusJakarta: ['plus-jakarta-sans', 'sans-serif']
     		},
@@ -86,7 +86,7 @@ const config: Config = {
     			md: 'calc(var(--radius) - 2px)',
     			sm: 'calc(var(--radius) - 4px)'
     		}
-    	},
+    	}
     },
   plugins: [require("tailwindcss-animate")]
 };
